@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter_Tight } from "next/font/google";
+import { Inter_Tight, Montserrat } from "next/font/google";
 import "./globals.css";
 
 /**
@@ -9,6 +9,14 @@ import "./globals.css";
 const fuente = Inter_Tight({
   subsets: ["latin"],
   variable: "--font-sans",
+  display: "swap",
+});
+
+/** Solo para la tarjeta impresa: es la tipografía que pidió el cliente. */
+const tarjeta = Montserrat({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "800"],
+  variable: "--font-tarjeta",
   display: "swap",
 });
 
@@ -27,7 +35,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es-AR" className={fuente.variable}>
+    <html lang="es-AR" className={`${fuente.variable} ${tarjeta.variable}`}>
       <body>{children}</body>
     </html>
   );

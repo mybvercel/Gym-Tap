@@ -75,6 +75,9 @@ export default function Inicio() {
         <Link className="secundaria" href="/tags">
           Qué grabar en cada chip
         </Link>
+        <Link className="secundaria" href="/tarjetas">
+          Imprimir las tarjetas
+        </Link>
         <Link className="secundaria" href="/panel">
           Panel de operaciones
         </Link>
