@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MAQUINAS, MODELOS, GIMNASIO, unidadesPorModelo } from "@/datos/catalogo";
+import { MAQUINAS, MODELOS, unidadesPorModelo } from "@/datos/catalogo";
 
 /**
  * El índice.
@@ -14,7 +14,7 @@ export default function Inicio() {
   return (
     <main className="marco">
       <header className="cabecera">
-        <p className="rotulo">{GIMNASIO}</p>
+        <p className="rotulo">Guía de sala</p>
         <h1>Ficha de Máquina</h1>
         <p className="suave">
           Apoyá el teléfono en el chip de la máquina y te dice cómo regularla,

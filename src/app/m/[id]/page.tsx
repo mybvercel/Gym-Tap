@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MAQUINAS, buscarMaquina, GIMNASIO } from "@/datos/catalogo";
+import { MAQUINAS, buscarMaquina } from "@/datos/catalogo";
+import { Objetivo } from "@/componentes/Objetivo";
 import { Dolor } from "@/componentes/Dolor";
 import { Reportar } from "@/componentes/Reportar";
 import { Lectura } from "@/componentes/Lectura";
@@ -11,6 +12,10 @@ import { Lectura } from "@/componentes/Lectura";
  * Se genera estática, una por unidad física. El contenido llega ya escrito
  * dentro del HTML: sin consultas, sin esqueletos de carga y sin esperar a que
  * el JavaScript se hidrate para poder leer a qué altura va el asiento.
+ *
+ * El orden de los bloques no es decorativo. Primero lo que la persona vino a
+ * buscar (cómo se regula), después lo que puede lastimarla, después lo que la
+ * máquina sabe hacer y que casi nadie sabe.
  */
 export function generateStaticParams() {
   return MAQUINAS.map((m) => ({ id: m.id }));
@@ -41,15 +46,15 @@ export default async function Ficha({ params }: { params: Promise<{ id: string }
 
       <header className="cabecera">
         <div className="migas">
-          <Link href="/">{GIMNASIO}</Link>
+          <Link href="/">Máquinas</Link>
           <span>·</span>
           <span>{maquina.sector}</span>
           <span className="tag">{maquina.etiqueta}</span>
         </div>
         <h1>{modelo.nombre}</h1>
+        <p className="suave">{modelo.resumen}</p>
       </header>
 
-      {/* Primero lo que vino a buscar: cómo se regula. */}
       <section className="panel">
         <p className="rotulo">Regulá la máquina</p>
         <div className="pasos">
@@ -65,6 +70,8 @@ export default async function Ficha({ params }: { params: Promise<{ id: string }
           ))}
         </div>
       </section>
+
+      <Objetivo modelo={modelo} />
 
       {/* Los errores van antes que el video: el video se mira una vez, el
           error se comete todas las series. */}
@@ -82,19 +89,31 @@ export default async function Ficha({ params }: { params: Promise<{ id: string }
         </div>
       </section>
 
+      {/* Lo que no cambia. Es lo que separa una ficha seria de una copiada de
+          internet, donde estos mitos se repiten como si fueran técnica. */}
       <section className="panel">
-        <p className="rotulo">Técnica</p>
-        {/* El video no se precarga nunca: son 280 KB que arruinan la carga de
-            alguien que solo quería saber la altura del asiento. */}
-        <div className="video">
-          <p className="suave chico">Video de 10 segundos, sin audio</p>
-          <p className="chico" style={{ color: "var(--texto-tenue)" }}>
-            Se graba en el gimnasio. Carga recién al tocarlo.
-          </p>
-        </div>
+        <p className="rotulo">Lo que no cambia</p>
+        {modelo.mitos.map((m, i) => (
+          <div className="mito" key={i}>
+            <p className="creencia">“{m.creencia}”</p>
+            <p className="realidad">{m.realidad}</p>
+          </div>
+        ))}
       </section>
 
       <Dolor modelo={modelo} />
+
+      <section className="panel">
+        <p className="rotulo">Técnica en video</p>
+        {/* El video no se precarga nunca: son 280 KB que arruinan la carga de
+            alguien que solo quería saber la altura del asiento. */}
+        <div className="video">
+          <p className="suave chico">10 segundos, sin audio, en bucle</p>
+          <p className="chico" style={{ color: "var(--texto-tenue)" }}>
+            Se graba en el gimnasio, con esta misma máquina.
+          </p>
+        </div>
+      </section>
 
       <div className="lista">
         {/* Contrato por URL, no API compartida: la app de carga usa lo que

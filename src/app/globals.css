@@ -420,3 +420,127 @@ p { margin: 0; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ------------------------------------------------------- Variantes */
+.variantes {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.variante {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  border-radius: var(--radio-chico);
+  background: var(--panel-alto);
+  border: 1px solid var(--linea);
+}
+
+/* Con lugar, el dibujo va al lado y se lee todo de un vistazo. */
+@media (min-width: 30rem) {
+  .variante {
+    grid-template-columns: 9.5rem 1fr;
+    align-items: start;
+  }
+}
+
+.variante-dibujo {
+  border-radius: 6px;
+  background: var(--fondo);
+  border: 1px solid var(--linea);
+  padding: 0.35rem;
+}
+
+.dibujo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Piezas de la maquina: gris, sin protagonismo. */
+.dibujo .pieza { fill: var(--panel-alto); stroke: var(--texto-tenue); stroke-width: 1.5; }
+.dibujo .pieza-linea { stroke: var(--texto-tenue); stroke-width: 3; stroke-linecap: round; }
+.dibujo .guia { stroke: var(--linea); stroke-width: 1.5; stroke-dasharray: 4 4; }
+
+/* Lo que hay que copiar va en ambar: es lo unico que se mira. */
+.dibujo .marca-pie,
+.dibujo .marca-mano { fill: var(--ambar); }
+.dibujo .marca-mano-c { fill: var(--ambar); }
+.dibujo .trayecto { stroke: var(--ambar); stroke-width: 2; stroke-dasharray: 5 4; }
+.dibujo .arco-activo { fill: none; stroke: var(--ambar); stroke-width: 7; stroke-linecap: round; }
+.dibujo .arco-total { fill: none; stroke: var(--linea); stroke-width: 7; stroke-linecap: round; }
+.dibujo .eje { fill: var(--texto-tenue); }
+
+/* El cuerpo esta para dar escala, no para mirarlo. */
+.dibujo .cuerpo { fill: none; stroke: var(--texto-tenue); stroke-width: 1.5; }
+.dibujo .cuerpo-linea { stroke: var(--texto-tenue); stroke-width: 2.5; stroke-linecap: round; }
+.dibujo .etiqueta { fill: var(--texto-tenue); font-size: 11px; font-family: inherit; }
+
+.variante-texto { display: grid; gap: 0.4rem; }
+
+.variante-titulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 0.6rem;
+}
+
+.variante-titulo h3 { font-size: 1rem; }
+
+.certeza {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  white-space: nowrap;
+  background: var(--panel);
+  border: 1px solid var(--linea);
+  color: var(--texto-tenue);
+}
+
+/* Solo lo medido se destaca. Lo demas se lee como lo que es. */
+.certeza[data-nivel="solida"] { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
+
+.variante .ajuste { font-size: 0.9375rem; font-weight: 600; }
+
+.variante .porque,
+.variante .dato {
+  font-size: 0.875rem;
+  color: var(--texto-suave);
+}
+
+.variante .ojo { color: var(--peligro); }
+
+/* Rotulo en linea, para no gastar un renglon por dato. */
+.pico {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  margin-right: 0.3rem;
+}
+
+.ojo .pico { color: var(--peligro); }
+
+/* ----------------------------------------------------------- Mitos */
+.mito {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--linea);
+}
+
+.mito:first-of-type { border-top: 0; padding-top: 0; }
+
+.creencia {
+  font-size: 0.9375rem;
+  color: var(--texto-tenue);
+  text-decoration: line-through;
+  text-decoration-color: var(--peligro);
+  text-decoration-thickness: 1.5px;
+}
+
+.realidad { font-size: 0.9375rem; color: var(--texto-suave); }

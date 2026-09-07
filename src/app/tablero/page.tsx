@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useSyncExternalStore } from "react";
-import { MAQUINAS, MODELOS, GIMNASIO } from "@/datos/catalogo";
+import { MAQUINAS, MODELOS } from "@/datos/catalogo";
 import {
   FALLAS,
   VACIO,
@@ -42,7 +42,7 @@ export default function Tablero() {
     <main className="marco">
       <header className="cabecera">
         <div className="migas">
-          <Link href="/">{GIMNASIO}</Link>
+          <Link href="/">Máquinas</Link>
           <span>·</span>
           <span>Panel</span>
         </div>

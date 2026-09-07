@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
-import { MAQUINAS, MODELOS, GIMNASIO } from "@/datos/catalogo";
+import { MAQUINAS, MODELOS } from "@/datos/catalogo";
 
 /** El origen no existe en el servidor, así que se lee del navegador sin
  *  copiarlo a estado: es un valor externo, no estado de la pantalla. */
@@ -40,7 +40,7 @@ export default function Tags() {
     <main className="marco">
       <header className="cabecera">
         <div className="migas">
-          <Link href="/">{GIMNASIO}</Link>
+          <Link href="/">Máquinas</Link>
           <span>·</span>
           <span>Instalación</span>
         </div>
