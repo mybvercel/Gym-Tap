@@ -1,0 +1,422 @@
+/* -------------------------------------------------------------------
+   La ficha se mira parado al lado de una máquina, con una mano, bajo
+   luces cenitales y a veces con las manos transpiradas. De ahí sale
+   todo: fondo oscuro, texto grande, y ningún objetivo táctil por
+   debajo de 56 px.
+
+   El ámbar es el único color saturado y solo aparece donde hay que
+   mirar: los errores que lesionan y el botón de reportar una falla.
+   ------------------------------------------------------------------- */
+
+:root {
+  --fondo: #0d1117;
+  --panel: #161c24;
+  --panel-alto: #1f2731;
+  --linea: #2a333e;
+
+  --texto: #eef2f6;
+  --texto-suave: #a6b2be;
+  --texto-tenue: #6f7d8a;
+
+  --ambar: #f5a524;
+  --ambar-oscuro: #d18a12;
+  --sobre-ambar: #14100a;
+  --ambar-lavado: #2a2113;
+
+  --peligro: #ff7a66;
+  --peligro-lavado: #2e1a17;
+  --ok: #5fc38d;
+  --info: #5aa9f0;
+
+  --radio: 12px;
+  --radio-chico: 8px;
+  --toque: 56px;
+  --curva: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.marco {
+  max-width: 34rem;
+  margin-inline: auto;
+  padding: 1rem 1rem calc(2.5rem + env(safe-area-inset-bottom));
+  display: grid;
+  gap: 1rem;
+}
+
+/* Los hijos de un grid arrancan en min-width:auto, asi que uno con contenido
+   ancho se desborda del contenedor en vez de encogerse. */
+.marco > *,
+.panel > *,
+.fila > * {
+  min-width: 0;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ambar);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------- Tipografía */
+h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin: 0;
+  text-wrap: balance;
+}
+
+h2 {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+p { margin: 0; }
+
+.rotulo {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  margin: 0;
+}
+
+.suave { color: var(--texto-suave); }
+.chico { font-size: 0.875rem; }
+
+/* --------------------------------------------------------- Cabecera */
+.cabecera {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.5rem 0 0.75rem;
+}
+
+.migas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--texto-tenue);
+}
+
+.migas a { color: var(--texto-suave); text-decoration: none; }
+
+/* ----------------------------------------------------------- Panel */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  padding: 1rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+/* ---------------------------------------------------------- Pasos */
+.pasos {
+  display: grid;
+  gap: 0;
+  counter-reset: paso;
+}
+
+.paso {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 0 0.875rem;
+  padding: 0.875rem 0;
+  border-top: 1px solid var(--linea);
+}
+
+.paso:first-child { border-top: 0; padding-top: 0.25rem; }
+
+.paso-num {
+  grid-row: span 3;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  background: var(--panel-alto);
+  border: 1px solid var(--linea);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--ambar);
+}
+
+.paso-detalle {
+  color: var(--texto-suave);
+  font-size: 0.9375rem;
+  margin-top: 0.15rem;
+}
+
+.referencia {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--ambar-lavado);
+  color: var(--ambar);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------- Errores */
+.errores { display: grid; gap: 0.75rem; }
+
+.error {
+  border-left: 3px solid var(--peligro);
+  background: var(--peligro-lavado);
+  border-radius: 0 var(--radio-chico) var(--radio-chico) 0;
+  padding: 0.75rem 0.875rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.error[data-gravedad="desgaste"] {
+  border-left-color: var(--ambar);
+  background: var(--ambar-lavado);
+}
+
+.error[data-gravedad="sin-estimulo"] {
+  border-left-color: var(--texto-tenue);
+  background: var(--panel-alto);
+}
+
+.error h3 { font-size: 0.9375rem; }
+.error p { font-size: 0.875rem; color: var(--texto-suave); }
+.error .correccion { color: var(--texto); font-weight: 600; }
+
+.marca {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--peligro);
+}
+
+.error[data-gravedad="desgaste"] .marca { color: var(--ambar); }
+.error[data-gravedad="sin-estimulo"] .marca { color: var(--texto-tenue); }
+
+/* ----------------------------------------------------------- Dolor */
+.zonas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+  gap: 0.5rem;
+}
+
+.zona {
+  min-height: var(--toque);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-chico);
+  background: var(--panel-alto);
+  color: var(--texto);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 120ms var(--curva), border-color 140ms ease;
+}
+
+.zona[aria-pressed="true"] {
+  border-color: var(--ambar);
+  color: var(--ambar);
+  background: var(--ambar-lavado);
+}
+
+.zona:active { transform: scale(0.97); }
+
+.respuesta {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.875rem;
+  border-radius: var(--radio-chico);
+  background: var(--panel-alto);
+  border: 1px solid var(--linea);
+}
+
+.respuesta .evitar { color: var(--peligro); font-size: 0.875rem; }
+.respuesta .derivar {
+  color: var(--ambar);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------- Botones */
+.accion {
+  width: 100%;
+  min-height: 60px;
+  border: 0;
+  border-radius: var(--radio);
+  background: var(--ambar);
+  color: var(--sobre-ambar);
+  font: inherit;
+  font-size: 1.0625rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+  text-decoration: none;
+  transition: transform 120ms var(--curva), background-color 140ms ease;
+}
+
+.accion:active { transform: scale(0.985); background: var(--ambar-oscuro); }
+
+.secundaria {
+  width: 100%;
+  min-height: var(--toque);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-chico);
+  background: var(--panel-alto);
+  color: var(--texto);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+  text-decoration: none;
+  transition: transform 120ms var(--curva);
+}
+
+.secundaria:active { transform: scale(0.98); }
+
+/* ----------------------------------------------------------- Video */
+.video {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radio-chico);
+  border: 1px dashed var(--linea);
+  background: var(--panel-alto);
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 0.35rem;
+  padding: 1rem;
+}
+
+/* -------------------------------------------------------- Listados */
+.lista { display: grid; gap: 0.5rem; }
+
+.fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: var(--toque);
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-chico);
+  background: var(--panel);
+  color: inherit;
+  text-decoration: none;
+}
+
+.fila:active { border-color: var(--ambar); }
+
+.fila-titulo { font-weight: 600; }
+
+.tag {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.8125rem;
+  color: var(--ambar);
+  background: var(--ambar-lavado);
+  border-radius: 4px;
+  padding: 0.15rem 0.45rem;
+  white-space: nowrap;
+}
+
+.url-tag {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+  word-break: break-all;
+}
+
+/* ----------------------------------------------------------- Aviso */
+.aviso {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.75rem 0.875rem;
+  border-radius: var(--radio-chico);
+  background: var(--panel-alto);
+  border: 1px solid var(--linea);
+  font-size: 0.875rem;
+  color: var(--texto-suave);
+}
+
+.aviso strong { color: var(--texto); }
+
+.exito {
+  border-color: var(--ok);
+  color: var(--ok);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------- Diálogo */
+.fondo-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 8, 12, 0.72);
+  display: grid;
+  place-items: end center;
+  z-index: 40;
+  padding: 1rem;
+}
+
+.modal {
+  width: 100%;
+  max-width: 32rem;
+  background: var(--panel);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  padding: 1rem;
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: env(safe-area-inset-bottom);
+  animation: sube 240ms var(--curva);
+}
+
+@keyframes sube {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.opciones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 0.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
