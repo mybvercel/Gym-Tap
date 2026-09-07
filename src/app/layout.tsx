@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Inter_Tight } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 /**
@@ -27,6 +28,19 @@ const tarjeta = Inter({
   display: "swap",
 });
 
+/**
+ * La voz del instrumento.
+ *
+ * Los códigos de inventario, las referencias y los índices van en
+ * monoespaciada: numeran y clasifican, no hablan. Es el segundo registro
+ * tipográfico de la tarjeta y no se mezcla nunca con el primero.
+ */
+const mono = localFont({
+  src: "./fuentes/GeistMono-Regular.ttf",
+  variable: "--font-mono",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Ficha de Máquina",
   description: "Cómo se regula, qué error lesiona y qué hacer si algo duele.",
@@ -42,7 +56,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es-AR" className={`${fuente.variable} ${tarjeta.variable}`}>
+    <html lang="es-AR" className={`${fuente.variable} ${tarjeta.variable} ${mono.variable}`}>
       <body>{children}</body>
     </html>
   );

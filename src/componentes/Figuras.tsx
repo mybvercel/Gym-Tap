@@ -14,22 +14,31 @@ interface Props {
   acento: string;
 }
 
-/** Sentadilla con los brazos al frente. */
+/**
+ * Sentadilla, de perfil, mirando a la izquierda.
+ *
+ * Las proporciones están puestas a mano hasta que la postura se lee sola: el
+ * torso inclinado hacia adelante, la cadera atrás, la rodilla sobre el pie. Un
+ * grado de más en el torso y parece alguien agachándose a atarse los cordones.
+ *
+ * Un solo acento de color por figura. Cuando el amarillo aparece en tres
+ * lugares deja de señalar nada.
+ */
 export function Sentadilla({ color, acento }: Props) {
   return (
     <svg viewBox="0 0 110 130" width="100%" height="100%" role="img" aria-label="Persona haciendo sentadilla">
       <g fill="none" stroke={color} strokeWidth="9" strokeLinecap="round" strokeLinejoin="round">
-        {/* Torso inclinado: es lo que hace que se lea como sentadilla y no como alguien parado. */}
-        <path d="M56 34 L48 68" />
-        <path d="M48 68 L74 78 L71 112" />
-        <path d="M48 68 L62 82 L60 112" />
-        <path d="M53 42 L72 46 L88 38" />
+        {/* Torso: del hombro a la cadera, que queda atrás y abajo. */}
+        <path d="M54 44 L70 76" />
+        {/* Pierna de atrás, un poco corrida para dar profundidad. */}
+        <path d="M70 76 L52 96 L56 116" />
+        {/* Pierna de adelante y el pie apoyado entero. */}
+        <path d="M70 76 L42 94 L46 116" />
+        <path d="M34 118 L58 118" />
+        {/* Brazos al frente, sosteniendo el equilibrio. */}
+        <path d="M54 44 L30 54" />
       </g>
-      <circle cx="58" cy="20" r="12" fill={acento} />
-      <g stroke={acento} strokeWidth="9" strokeLinecap="round">
-        <path d="M71 112 L84 112" />
-        <path d="M60 112 L73 112" />
-      </g>
+      <circle cx="46" cy="26" r="11" fill={acento} />
     </svg>
   );
 }

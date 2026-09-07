@@ -26,6 +26,7 @@
 }
 
 .tarjeta {
+  position: relative;
   /* Medida real del portadocumentos. */
   width: 130mm;
   height: 180mm;
@@ -85,9 +86,10 @@
 .t-logo-img { height: 8mm; display: block; }
 
 .t-sede {
-  font-size: 3mm;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 2.8mm;
+  font-weight: 400;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--tenue);
 }
@@ -112,7 +114,7 @@
 .t-titulo {
   text-align: center;
   display: grid;
-  gap: 1.5mm;
+  gap: 2.2mm;
   justify-items: center;
 }
 
@@ -121,7 +123,7 @@
   font-size: 7mm;
   font-weight: 800;
   line-height: 1.02;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   text-transform: uppercase;
   text-wrap: balance;
 }
@@ -213,21 +215,34 @@
   align-items: baseline;
   padding-top: 3.5mm;
   border-top: 0.4mm solid var(--linea-t);
-  font-size: 2.7mm;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 2.5mm;
+  letter-spacing: 0.14em;
   color: var(--tenue);
 }
 
-.t-codigo {
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.14em;
-  font-weight: 700;
-  color: var(--amarillo);
+.t-codigo { color: var(--amarillo); }
+.t-sector { color: var(--tenue); }
+.t-pie-der { margin-left: auto; }
+
+/* --------------------------------------------------------- Registros */
+.t-registros span {
+  position: absolute;
+  width: 4mm;
+  height: 4mm;
+  border-color: var(--linea-t);
+  border-style: solid;
+  border-width: 0;
 }
 
-.t-sector { letter-spacing: 0.06em; }
-.t-pie-der { margin-left: auto; letter-spacing: 0.06em; }
+.t-registros span:nth-child(1) { top: 5mm; left: 5mm; border-top-width: 0.3mm; border-left-width: 0.3mm; }
+.t-registros span:nth-child(2) { top: 5mm; right: 5mm; border-top-width: 0.3mm; border-right-width: 0.3mm; }
+.t-registros span:nth-child(3) { bottom: 5mm; left: 5mm; border-bottom-width: 0.3mm; border-left-width: 0.3mm; }
+.t-registros span:nth-child(4) { bottom: 5mm; right: 5mm; border-bottom-width: 0.3mm; border-right-width: 0.3mm; }
 
 /* -------------------------------------------------------------- Pantalla */
+.controles[hidden] { display: none; }
+
 .controles {
   position: sticky;
   top: 0;

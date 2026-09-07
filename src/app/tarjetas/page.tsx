@@ -40,11 +40,24 @@ export default function Tarjetas() {
   const [sucursal, setSucursal] = useState("todas");
   const [tema, setTema] = useState<"negro" | "claro">("negro");
 
-  const maquinas = MAQUINAS.filter((m) => sucursal === "todas" || m.sucursal === sucursal);
+  /**
+   * `?solo=p1` deja una sola tarjeta y esconde los controles. Es para cuando
+   * arrancan un sticker de una máquina y hay que reponer esa nada más, que es
+   * lo que va a pasar seguido.
+   */
+  const solo = useSyncExternalStore(
+    () => () => {},
+    () => new URLSearchParams(window.location.search).get("solo") ?? "",
+    () => "",
+  );
+
+  const maquinas = MAQUINAS.filter(
+    (m) => (solo ? m.id === solo : true) && (sucursal === "todas" || m.sucursal === sucursal),
+  );
 
   return (
     <>
-      <div className="controles">
+      <div className="controles" hidden={!!solo}>
         <div className="controles-fila">
           <Link className="secundaria" href="/">
             Volver
@@ -84,8 +97,14 @@ export default function Tarjetas() {
       </div>
 
       <div className="hojas">
-        {maquinas.map((m) => (
-          <Tarjeta key={m.id} maquina={m} url={`${origen}/m/${m.id}`} tema={tema} />
+        {maquinas.map((m, i) => (
+          <Tarjeta
+            key={m.id}
+            maquina={m}
+            url={`${origen}/m/${m.id}`}
+            tema={tema}
+            indice={`${String(i + 1).padStart(2, "0")} / ${String(maquinas.length).padStart(2, "0")}`}
+          />
         ))}
       </div>
     </>
@@ -96,10 +115,12 @@ function Tarjeta({
   maquina,
   url,
   tema,
+  indice,
 }: {
   maquina: Maquina;
   url: string;
   tema: "negro" | "claro";
+  indice: string;
 }) {
   const modelo = buscarModelo(maquina.modelo);
   const [qr, setQr] = useState("");
@@ -118,6 +139,13 @@ function Tarjeta({
 
   return (
     <article className="tarjeta" data-tema={tema}>
+      {/* Registros de esquina: el vocabulario del taller. No explican nada y
+          sin embargo ordenan todo, y declaran que esto se midió antes de
+          dibujarse. */}
+      <div className="t-registros" aria-hidden="true">
+        <span /><span /><span /><span />
+      </div>
+
       <div className="t-marca">
         {LOGO ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -174,7 +202,7 @@ function Tarjeta({
       <footer className="t-pie">
         <span className="t-codigo">{maquina.codigo}</span>
         <span className="t-sector">{maquina.sector}</span>
-        <span className="t-pie-der">Smart Gym</span>
+        <span className="t-pie-der">{indice}</span>
       </footer>
     </article>
   );
