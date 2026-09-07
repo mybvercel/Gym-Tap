@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter_Tight, Montserrat } from "next/font/google";
+import { Inter, Inter_Tight } from "next/font/google";
 import "./globals.css";
 
 /**
@@ -12,10 +12,17 @@ const fuente = Inter_Tight({
   display: "swap",
 });
 
-/** Solo para la tarjeta impresa: es la tipografía que pidió el cliente. */
-const tarjeta = Montserrat({
+/**
+ * La tarjeta usa la tipografía de Qivox.
+ *
+ * Sus títulos son Graphik, que es licenciada y no se puede distribuir. Inter es
+ * lo que su propio sitio sirve para todo lo demás y lo que usa cuando Graphik
+ * no carga, así que es la sustituta correcta: misma familia neo-grotesca, mismo
+ * aire. Si consiguen la licencia de Graphik, se cambia una línea.
+ */
+const tarjeta = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "800"],
+  weight: ["400", "500", "600", "700", "800", "900"],
   variable: "--font-tarjeta",
   display: "swap",
 });

@@ -1,14 +1,15 @@
 /* -------------------------------------------------------------------
-   La tarjeta del atril: 13 × 18 cm.
+   La tarjeta del atril, en la marca de Qivox: 13 × 18 cm.
 
    Todo está en milímetros y no en píxeles porque esto se imprime. Un
    diseño en píxeles sale de distinto tamaño según la pantalla y el
    navegador; en milímetros sale siempre igual, que es lo único que
-   importa cuando después hay que meterlo en un acrílico.
+   importa cuando después hay que meterlo en el acrílico.
 
-   Fondo claro a propósito: el atril está en una sala iluminada, y un
-   fondo oscuro a esta escala se come un cartucho por tarjeta y refleja
-   las luces cenitales justo encima del QR.
+   El sistema visual sale del sitio de Qivox, no de una interpretación:
+   el logo es 100 % #FFBD00, el fondo dominante es #111111, y cada
+   elemento de acción es una píldora completamente redondeada. Acá se
+   respeta eso hasta en el radio de los bordes.
    ------------------------------------------------------------------- */
 
 @page {
@@ -29,37 +30,81 @@
   width: 130mm;
   height: 180mm;
   box-sizing: border-box;
-  padding: 12mm 11mm 9mm;
+  padding: 11mm 10mm 8mm;
 
   display: grid;
-  grid-template-rows: auto 1fr auto auto;
-  gap: 6mm;
+  grid-template-rows: auto auto 1fr auto auto;
+  gap: 5mm;
 
-  background: #f8f6f2;
-  color: #1b1b1b;
-  font-family: var(--font-tarjeta), "Montserrat", system-ui, sans-serif;
-
-  /* Las esquinas de color: es lo que la saca de "cartel genérico". */
-  background-image:
-    radial-gradient(circle at 0 0, #f0a020 0 26mm, transparent 26mm),
-    radial-gradient(circle at 100% 100%, #1f7a8c 0 22mm, transparent 22mm);
-  background-repeat: no-repeat;
+  font-family: var(--font-tarjeta), Inter, system-ui, sans-serif;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
+
+  --amarillo: #ffbd00;
+  --negro: #111111;
 }
 
-/* ------------------------------------------------------------ Cabecera */
+/* La versión de marca: negro con el amarillo como único acento. */
+.tarjeta[data-tema="negro"] {
+  background: var(--negro);
+  color: #ffffff;
+  --tenue: #8d8d8d;
+  --linea-t: #2b2b2b;
+  --figura: #ffffff;
+}
+
+/* La misma tarjeta en claro, para tiradas grandes: un fondo negro a esta
+   escala se come un cartucho por hoja si se imprime en el gimnasio. */
+.tarjeta[data-tema="claro"] {
+  background: #ffffff;
+  color: var(--negro);
+  --tenue: #7a7a7a;
+  --linea-t: #e2e2e2;
+  --figura: #111111;
+}
+
+/* ---------------------------------------------------------------- Marca */
+.t-marca {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4mm;
+}
+
+/* Hasta que llegue el logo oficial, la palabra con el peso y el color
+   correctos. Se reemplaza soltando el archivo en /public. */
+.t-logo {
+  font-size: 8mm;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  color: var(--amarillo);
+  margin: 0;
+}
+
+.t-logo-img { height: 8mm; display: block; }
+
+.t-sede {
+  font-size: 3mm;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tenue);
+}
+
+/* ------------------------------------------------------------- Cabecera */
 .t-cabecera {
   display: grid;
-  grid-template-columns: 22mm 1fr 22mm;
+  grid-template-columns: 20mm 1fr 20mm;
   align-items: center;
-  gap: 4mm;
-  padding-bottom: 5mm;
-  border-bottom: 0.6mm solid #1b1b1b;
+  gap: 3mm;
+  padding: 4mm 0;
+  border-top: 0.4mm solid var(--linea-t);
+  border-bottom: 0.4mm solid var(--linea-t);
 }
 
 .t-figura {
-  height: 26mm;
+  height: 24mm;
   display: grid;
   place-items: center;
 }
@@ -67,114 +112,122 @@
 .t-titulo {
   text-align: center;
   display: grid;
-  gap: 1mm;
+  gap: 1.5mm;
+  justify-items: center;
 }
 
 .t-titulo h1 {
   margin: 0;
-  font-size: 7.4mm;
+  font-size: 7mm;
   font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.01em;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
   text-transform: uppercase;
   text-wrap: balance;
 }
 
-.t-titulo p {
-  margin: 0;
-  font-size: 3.6mm;
-  font-weight: 500;
-  color: #6a6a6a;
+/* La píldora es la forma de la marca: todos sus botones y badges la usan. */
+.t-pildora {
+  display: inline-block;
+  padding: 1.2mm 4mm;
+  border-radius: 999px;
+  background: var(--amarillo);
+  color: var(--negro);
+  font-size: 3mm;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-/* ----------------------------------------------------------- Preguntas */
+/* ------------------------------------------------------------ Preguntas */
 .t-preguntas {
   display: grid;
   align-content: center;
-  gap: 3mm;
+  gap: 3.5mm;
   text-align: center;
 }
 
 .t-preguntas p {
   margin: 0;
-  font-size: 5.6mm;
-  font-weight: 400;
-  line-height: 1.25;
+  font-size: 5.8mm;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 .t-preguntas strong {
   font-weight: 800;
-  /* El subrayado grueso hace de resaltador sin gastar tinta de fondo. */
-  box-shadow: inset 0 -1.6mm 0 #f0a020;
+  color: var(--amarillo);
 }
 
-/* ------------------------------------------------------------ Accesos */
+/* ------------------------------------------------------------- Accesos */
 .t-accesos {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 4mm;
+  align-items: start;
+  gap: 3mm;
 }
 
 .t-acceso {
   display: grid;
   justify-items: center;
-  gap: 2.5mm;
+  gap: 3mm;
 }
 
+/* Radio 6 mm ≈ los 24 px que usa Qivox en sus tarjetas. */
 .t-marco {
-  width: 38mm;
-  height: 38mm;
+  width: 40mm;
+  height: 40mm;
   display: grid;
   place-items: center;
-  padding: 4mm;
+  padding: 5mm;
   background: #ffffff;
-  border: 0.5mm solid #1b1b1b;
-  border-radius: 2mm;
+  border-radius: 6mm;
 }
 
-/* El QR va a sangre dentro de su marco: cuanto más grande, más lejos lee. */
-.t-marco-qr { padding: 2.5mm; }
+/* El QR llena su caja: cuanto más grande, desde más lejos lee. */
+.t-marco-qr { padding: 3mm; }
 .t-marco-qr img { width: 100%; height: 100%; display: block; }
 
 .t-como {
   margin: 0;
-  font-size: 3.4mm;
+  padding: 1.2mm 4mm;
+  border-radius: 999px;
+  border: 0.4mm solid var(--linea-t);
+  font-size: 3.2mm;
   font-weight: 600;
-  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 .t-o {
-  font-size: 3.6mm;
+  font-size: 3.4mm;
   font-weight: 500;
-  color: #8a8a8a;
-  align-self: center;
-  padding-bottom: 6mm;
+  color: var(--tenue);
+  padding-top: 18mm;
 }
 
-/* ---------------------------------------------------------------- Pie */
-/* Todo a la izquierda: la esquina derecha la ocupa el circulo de color y el
-   texto ahi abajo queda ilegible. */
+/* ----------------------------------------------------------------- Pie */
 .t-pie {
   display: flex;
   gap: 4mm;
   align-items: baseline;
-  padding-right: 24mm;
-  padding-top: 4mm;
-  border-top: 0.3mm solid #c9c4bb;
-  font-size: 2.8mm;
-  color: #8a8a8a;
+  padding-top: 3.5mm;
+  border-top: 0.4mm solid var(--linea-t);
+  font-size: 2.7mm;
+  color: var(--tenue);
 }
 
 .t-codigo {
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.12em;
-  font-weight: 600;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  color: var(--amarillo);
 }
 
 .t-sector { letter-spacing: 0.06em; }
+.t-pie-der { margin-left: auto; letter-spacing: 0.06em; }
 
-/* ------------------------------------------------------------ Pantalla */
+/* -------------------------------------------------------------- Pantalla */
 .controles {
   position: sticky;
   top: 0;
@@ -196,11 +249,8 @@
 .controles-fila > * { width: auto; }
 .controles-fila .accion { padding-inline: 1.25rem; }
 
-/* Sombra solo en pantalla: en papel no existe. */
 @media screen {
-  .tarjeta {
-    box-shadow: 0 10px 40px -20px rgba(0, 0, 0, 0.8);
-  }
+  .tarjeta { box-shadow: 0 10px 40px -20px rgba(0, 0, 0, 0.9); }
 }
 
 @media print {

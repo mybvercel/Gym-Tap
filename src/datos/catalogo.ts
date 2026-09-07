@@ -684,7 +684,7 @@ export const MODELOS: Modelo[] = [
 ];
 
 export const SUCURSALES: Sucursal[] = [
-  { id: "cerro", nombre: "Cerro", prefijo: "QVX-CERRO" },
+  { id: "guemes", nombre: "Güemes", prefijo: "QVX-GUEM" },
   { id: "nueva-cba", nombre: "Nueva Córdoba", prefijo: "QVX-NCBA" },
 ];
 
@@ -698,36 +698,36 @@ export const SUCURSALES: Sucursal[] = [
  */
 export const MAQUINAS: Maquina[] = [
   {
-    id: "p1", codigo: "QVX-CERRO-PR-023", sucursal: "cerro", modelo: "prensa-45",
+    id: "p1", codigo: "QVX-GUEM-PR-023", sucursal: "guemes", modelo: "prensa-45",
     etiqueta: "Prensa 1", sector: "Sala pierna", estado: "operativa", cadaDias: 30,
     ultimoServicio: { fecha: "2026-08-14", tecnico: "M. Ávila", problema: "Engrase de guías" },
   },
   {
-    id: "p2", codigo: "QVX-CERRO-PR-024", sucursal: "cerro", modelo: "prensa-45",
+    id: "p2", codigo: "QVX-GUEM-PR-024", sucursal: "guemes", modelo: "prensa-45",
     etiqueta: "Prensa 2", sector: "Sala pierna", estado: "observacion", cadaDias: 30,
     ultimoServicio: { fecha: "2026-07-02", tecnico: "M. Ávila", problema: "Cambio de traba lateral", repuesto: "Traba 12 mm" },
   },
   {
-    id: "e1", codigo: "QVX-CERRO-EX-011", sucursal: "cerro", modelo: "extension-rodilla",
+    id: "e1", codigo: "QVX-GUEM-EX-011", sucursal: "guemes", modelo: "extension-rodilla",
     etiqueta: "Camilla cuádriceps", sector: "Sala pierna", estado: "operativa", cadaDias: 45,
     ultimoServicio: { fecha: "2026-08-28", tecnico: "R. Paz", problema: "Ajuste de rodillo" },
   },
   {
-    id: "j1", codigo: "QVX-CERRO-JA-006", sucursal: "cerro", modelo: "jalon-pecho",
+    id: "j1", codigo: "QVX-GUEM-JA-006", sucursal: "guemes", modelo: "jalon-pecho",
     etiqueta: "Jalón", sector: "Sala espalda", estado: "operativa", cadaDias: 30,
     ultimoServicio: { fecha: "2026-06-19", tecnico: "R. Paz", problema: "Cambio de cable", repuesto: "Cable 5 mm · 3,2 m" },
   },
   {
-    id: "r1", codigo: "QVX-CERRO-RE-004", sucursal: "cerro", modelo: "remo-sentado",
+    id: "r1", codigo: "QVX-GUEM-RE-004", sucursal: "guemes", modelo: "remo-sentado",
     etiqueta: "Remo bajo", sector: "Sala espalda", estado: "operativa", cadaDias: 30,
   },
   {
-    id: "b1", codigo: "QVX-CERRO-PP-009", sucursal: "cerro", modelo: "press-pecho",
+    id: "b1", codigo: "QVX-GUEM-PP-009", sucursal: "guemes", modelo: "press-pecho",
     etiqueta: "Press pecho", sector: "Sala empuje", estado: "operativa", cadaDias: 30,
     ultimoServicio: { fecha: "2026-08-30", tecnico: "M. Ávila", problema: "Tapizado del respaldo", repuesto: "Tapizado" },
   },
   {
-    id: "h1", codigo: "QVX-CERRO-PH-002", sucursal: "cerro", modelo: "press-hombro",
+    id: "h1", codigo: "QVX-GUEM-PH-002", sucursal: "guemes", modelo: "press-hombro",
     etiqueta: "Press hombro", sector: "Sala empuje", estado: "fuera-de-servicio", cadaDias: 30,
     ultimoServicio: { fecha: "2026-05-11", tecnico: "R. Paz", problema: "Revisión general" },
   },
