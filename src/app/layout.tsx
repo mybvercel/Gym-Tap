@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Inter_Tight } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import { SinRed } from "@/componentes/SinRed";
 
 /**
  * La clase va en <html> y no en <body>: la variable de la fuente se resuelve
@@ -57,7 +58,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es-AR" className={`${fuente.variable} ${tarjeta.variable} ${mono.variable}`}>
-      <body>{children}</body>
+      <body>
+        <SinRed />
+        {children}
+      </body>
     </html>
   );
 }

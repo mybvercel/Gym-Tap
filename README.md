@@ -85,11 +85,25 @@ npm install
 npm run dev     # http://localhost:3011
 ```
 
+## Sin señal
+
+Un gimnasio es un sótano con paredes de hormigón, así que la ficha tiene que
+abrirse igual. La trampa es que un caché normal guarda lo que ya se visitó, y
+nadie visitó todavía la máquina que está por usar.
+
+Por eso la primera lectura del día precarga todas las fichas de la sala: son
+unos pocos KB por máquina, menos de lo que la persona acaba de bajar sin
+quejarse para ver esa misma ficha. Verificado con la red cortada: una ficha que
+nunca se abrió responde igual, con su contenido completo.
+
+Las fichas se sirven del caché y se actualizan por detrás. Adentro del gimnasio
+el disco es más rápido y más confiable que la red, y si el contenido cambió la
+versión nueva queda lista para la próxima lectura, que es dentro de un minuto.
+
 ## Qué falta para producción
 
 - Base de datos. Hoy los tickets y las lecturas viven en el teléfono para que la
   demo ande sin servidor.
 - Aviso al staff por WhatsApp o Slack en el momento del reporte.
 - Los videos, que se graban en el gimnasio.
-- Service worker: hoy registrar funciona sin red, pero la primera visita del día
-  la necesita.
+- La primera visita del día necesita red una vez. Después ya no.

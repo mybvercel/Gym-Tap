@@ -1,4 +1,4 @@
-import type { Maquina, Modelo, Musculo, Sucursal } from "./tipos";
+import type { Maquina, Modelo, Sucursal } from "./tipos";
 
 export * from "./tipos";
 
@@ -765,12 +765,6 @@ export function nombreSucursal(id: string): string {
 /** Cuántas unidades comparten cada modelo. Es el argumento del catálogo. */
 export function unidadesPorModelo(modeloId: string): number {
   return MAQUINAS.filter((m) => m.modelo === modeloId).length;
-}
-
-/** Qué músculos se pueden entrenar y en qué máquinas. */
-export function maquinasPorMusculo(musculo: Musculo): Maquina[] {
-  const modelos = MODELOS.filter((m) => m.musculos.includes(musculo)).map((m) => m.id);
-  return MAQUINAS.filter((m) => modelos.includes(m.modelo));
 }
 
 /**

@@ -3,6 +3,7 @@
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { AVISO_GRASA, PAUTAS, type Objetivo } from "@/datos/tipos";
 import { crudoCargas, guardarCarga, suscribir, type Carga } from "@/lib/local";
+import { SALTO_KG, siguienteSerie } from "@/lib/progresion";
 
 /**
  * El plan de hoy.
@@ -11,11 +12,9 @@ import { crudoCargas, guardarCarga, suscribir, type Carga } from "@/lib/local";
  * hacer acá". Las series y repeticiones dependen del objetivo, no de la
  * máquina, así que la pauta es la misma en todas y lo que cambia es el peso.
  *
- * La progresión es doble: primero se suben las repeticiones dentro del rango y
- * recién cuando se llega arriba se sube el peso. Es la forma más simple de
- * progresar sin que nadie tenga que calcular porcentajes en el gimnasio.
+ * La regla de progresión vive en `lib/progresion` y está probada sin navegador:
+ * acá solo se muestra.
  */
-const SALTO_KG = 2.5;
 
 export function Plan({ modelo, unidad = "kg" }: { modelo: string; unidad?: string }) {
   const [objetivo, setObjetivo] = useState<Objetivo>("masa");
@@ -31,11 +30,7 @@ export function Plan({ modelo, unidad = "kg" }: { modelo: string; unidad?: strin
   const [min, max] = pauta.reps;
 
   // Lo que hay que hacer hoy sale de lo que se hizo la vez pasada.
-  const sugerido = anterior
-    ? anterior.reps >= max
-      ? { peso: anterior.peso + SALTO_KG, reps: min, subio: true }
-      : { peso: anterior.peso, reps: Math.min(anterior.reps + 1, max), subio: false }
-    : null;
+  const sugerido = siguienteSerie(anterior, pauta);
 
   const [peso, setPeso] = useState<number | null>(null);
   const [reps, setReps] = useState<number | null>(null);
