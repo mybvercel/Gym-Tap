@@ -1,9 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import { MAQUINAS, MODELOS, GIMNASIO } from "@/datos/catalogo";
-import { FALLAS, leerLecturas, leerTickets, limpiarDemo, type Ticket } from "@/lib/local";
+import {
+  FALLAS,
+  VACIO,
+  crudoLecturas,
+  crudoTickets,
+  limpiarDemo,
+  suscribir,
+  type LecturaRegistrada,
+  type Ticket,
+} from "@/lib/local";
 
 /**
  * El panel del dueño.
@@ -13,15 +22,19 @@ import { FALLAS, leerLecturas, leerTickets, limpiarDemo, type Ticket } from "@/l
  * se los pida.
  */
 export default function Tablero() {
-  const [tickets, setTickets] = useState<Ticket[] | null>(null);
-  const [uso, setUso] = useState<Map<string, number>>(new Map());
+  // El servidor no tiene nada de esto, así que en el primer render devuelve
+  // vacío y el navegador lo reemplaza sin pasar por un efecto.
+  const crudoT = useSyncExternalStore(suscribir, crudoTickets, () => VACIO);
+  const crudoL = useSyncExternalStore(suscribir, crudoLecturas, () => VACIO);
 
-  useEffect(() => {
-    setTickets(leerTickets());
+  const tickets = useMemo(() => JSON.parse(crudoT) as Ticket[], [crudoT]);
+  const uso = useMemo(() => {
     const cuenta = new Map<string, number>();
-    for (const l of leerLecturas()) cuenta.set(l.maquina, (cuenta.get(l.maquina) ?? 0) + 1);
-    setUso(cuenta);
-  }, []);
+    for (const l of JSON.parse(crudoL) as LecturaRegistrada[]) {
+      cuenta.set(l.maquina, (cuenta.get(l.maquina) ?? 0) + 1);
+    }
+    return cuenta;
+  }, [crudoL]);
 
   const maximo = Math.max(1, ...uso.values());
 
@@ -38,9 +51,7 @@ export default function Tablero() {
 
       <section className="panel">
         <p className="rotulo">Fallas abiertas</p>
-        {tickets === null ? (
-          <p className="suave chico">Cargando…</p>
-        ) : tickets.length === 0 ? (
+        {tickets.length === 0 ? (
           <p className="suave chico">
             Nada roto. Cuando alguien reporte una falla desde una máquina, aparece acá.
           </p>
@@ -123,11 +134,7 @@ export default function Tablero() {
         <button
           type="button"
           className="secundaria"
-          onClick={() => {
-            limpiarDemo();
-            setTickets([]);
-            setUso(new Map());
-          }}
+          onClick={limpiarDemo}
         >
           Borrar datos de la demo
         </button>

@@ -1,8 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { MAQUINAS, MODELOS, GIMNASIO } from "@/datos/catalogo";
+
+/** El origen no existe en el servidor, así que se lee del navegador sin
+ *  copiarlo a estado: es un valor externo, no estado de la pantalla. */
+const sinCambios = () => () => {};
 
 /**
  * El mapa de chips.
@@ -15,10 +19,12 @@ import { MAQUINAS, MODELOS, GIMNASIO } from "@/datos/catalogo";
  * y en el dominio real, sin tener que editar nada.
  */
 export default function Tags() {
-  const [origen, setOrigen] = useState("");
+  const origen = useSyncExternalStore(
+    sinCambios,
+    () => window.location.origin,
+    () => "",
+  );
   const [copiado, setCopiado] = useState<string | null>(null);
-
-  useEffect(() => setOrigen(window.location.origin), []);
 
   async function copiar(id: string, url: string) {
     try {

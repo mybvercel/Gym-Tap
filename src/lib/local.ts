@@ -51,7 +51,48 @@ function escribir(clave: string, valor: unknown): void {
   } catch {
     /* Modo privado o disco lleno: la demo sigue funcionando sin historial. */
   }
+  avisar();
 }
+
+
+/* -------------------------------------------------------------------------
+   Suscripción.
+
+   Las pantallas leen esto con `useSyncExternalStore` en vez de copiarlo a
+   estado dentro de un efecto: guardar en el estado lo que ya vive afuera de
+   React obliga a un render extra y desincroniza las dos copias apenas alguien
+   escribe. Los lectores devuelven la cadena cruda porque tiene que ser estable
+   entre llamadas; el parseo va en la pantalla, memorizado.
+   ------------------------------------------------------------------------- */
+
+const oyentes = new Set<() => void>();
+
+export function suscribir(fn: () => void): () => void {
+  oyentes.add(fn);
+  return () => oyentes.delete(fn);
+}
+
+function avisar(): void {
+  for (const fn of oyentes) fn();
+}
+
+export function crudoTickets(): string {
+  try {
+    return localStorage.getItem(K_TICKETS) ?? "[]";
+  } catch {
+    return "[]";
+  }
+}
+
+export function crudoLecturas(): string {
+  try {
+    return localStorage.getItem(K_LECTURAS) ?? "[]";
+  } catch {
+    return "[]";
+  }
+}
+
+export const VACIO = "[]";
 
 export function leerTickets(): Ticket[] {
   return leer<Ticket>(K_TICKETS);
