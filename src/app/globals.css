@@ -544,3 +544,260 @@ p { margin: 0; }
 }
 
 .realidad { font-size: 0.9375rem; color: var(--texto-suave); }
+
+/* ============================================================== Panel */
+.marco.ancho { max-width: 52rem; }
+
+/* Los numeros de arriba: se miran de reojo antes de decidir que hacer. */
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: 0.5rem;
+}
+
+.tarjeta {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.875rem;
+  border-radius: var(--radio-chico);
+  background: var(--panel);
+  border: 1px solid var(--linea);
+}
+
+.tarjeta[data-alerta="true"] {
+  border-color: color-mix(in srgb, var(--peligro) 55%, transparent);
+  background: var(--peligro-lavado);
+}
+
+.tarjeta-valor {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.tarjeta[data-alerta="true"] .tarjeta-valor { color: var(--peligro); }
+
+.tarjeta-etq {
+  font-size: 0.75rem;
+  color: var(--texto-tenue);
+}
+
+/* ------------------------------------------------ Fila de maquina */
+.maquina {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.875rem;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-chico);
+  background: var(--panel-alto);
+}
+
+.maquina-cab {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.maquina-datos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+}
+
+.maquina-acciones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.codigo {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 0.75rem;
+  color: var(--texto-tenue);
+  white-space: nowrap;
+  margin: 0;
+}
+
+/* El estado se lee por forma y color, no solo por texto. */
+.estado {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  border: 1px solid;
+}
+
+.estado[data-estado="operativa"] { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
+.estado[data-estado="observacion"] { color: var(--ambar); border-color: color-mix(in srgb, var(--ambar) 45%, transparent); }
+.estado[data-estado="fuera-de-servicio"] { color: var(--peligro); border-color: color-mix(in srgb, var(--peligro) 55%, transparent); background: var(--peligro-lavado); }
+
+.selector {
+  min-height: var(--toque);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-chico);
+  background: var(--panel);
+  color: var(--texto);
+  font: inherit;
+  font-size: 0.9375rem;
+  padding: 0 0.75rem;
+}
+
+/* --------------------------------------------------------- Barras */
+.barra-fila {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr 2.5rem;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.barra {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--panel-alto);
+  overflow: hidden;
+}
+
+.barra-relleno {
+  height: 100%;
+  background: var(--ambar);
+  transition: width 320ms var(--curva);
+}
+
+.cifra-chica { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* -------------------------------------------------------- Campos */
+.campo { display: grid; gap: 0.3rem; }
+
+.campo input {
+  min-height: var(--toque);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-chico);
+  background: var(--panel-alto);
+  color: var(--texto);
+  font: inherit;
+  font-size: 1rem;
+  padding: 0 0.75rem;
+}
+
+/* ============================================== Aviso en la ficha */
+.banner {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radio-chico);
+  border: 1px solid;
+  font-size: 0.9375rem;
+}
+
+.banner[data-estado="fuera-de-servicio"] {
+  background: var(--peligro-lavado);
+  border-color: var(--peligro);
+  color: var(--peligro);
+}
+
+.banner[data-estado="observacion"] {
+  background: var(--ambar-lavado);
+  border-color: color-mix(in srgb, var(--ambar) 50%, transparent);
+  color: var(--ambar);
+}
+
+.banner span { color: var(--texto-suave); }
+
+/* ================================================ Plan de la serie */
+.pauta {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.875rem;
+  border-radius: var(--radio-chico);
+  background: var(--panel-alto);
+  border: 1px solid var(--linea);
+}
+
+/* Tres numeros en fila, con su etiqueta debajo: es lo que se mira. */
+.pauta-numeros {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.15rem 0.5rem;
+  text-align: center;
+}
+
+.cifra {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--ambar);
+}
+
+.cifra-etq {
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+.progresion {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.75rem 0.875rem;
+  border-left: 3px solid var(--ok);
+  border-radius: 0 var(--radio-chico) var(--radio-chico) 0;
+  background: var(--panel-alto);
+}
+
+.fuerte { font-weight: 700; }
+
+.dos-cargas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.carga {
+  display: grid;
+  grid-template-columns: var(--toque) 1fr var(--toque);
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.valor {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.valor span {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+.enlace-tenue {
+  min-height: 44px;
+  border: 0;
+  background: none;
+  color: var(--texto-tenue);
+  font: inherit;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  cursor: pointer;
+  justify-self: start;
+  padding: 0;
+}
+
+@media (max-width: 26rem) {
+  .dos-cargas { grid-template-columns: 1fr; }
+  .barra-fila { grid-template-columns: 6.5rem 1fr 2.2rem; }
+}
+
+.cifra.corta { font-size: 1.125rem; }

@@ -1,4 +1,4 @@
-import type { Maquina, Modelo, Musculo } from "./tipos";
+import type { Maquina, Modelo, Musculo, Sucursal } from "./tipos";
 
 export * from "./tipos";
 
@@ -683,15 +683,68 @@ export const MODELOS: Modelo[] = [
   },
 ];
 
-/** Las unidades físicas de este gimnasio. Cada una tiene su chip. */
+export const SUCURSALES: Sucursal[] = [
+  { id: "cerro", nombre: "Cerro", prefijo: "QVX-CERRO" },
+  { id: "nueva-cba", nombre: "Nueva Córdoba", prefijo: "QVX-NCBA" },
+];
+
+/**
+ * Las unidades físicas. Cada una tiene su chip.
+ *
+ * Dos sucursales con las mismas máquinas: es el argumento del catálogo puesto
+ * a prueba. Las cuatro prensas del sistema comparten una sola ficha, escrita
+ * una vez, y lo único propio de cada unidad es dónde está, qué código tiene y
+ * si funciona.
+ */
 export const MAQUINAS: Maquina[] = [
-  { id: "p1", modelo: "prensa-45", etiqueta: "Prensa 1", sector: "Sala pierna" },
-  { id: "p2", modelo: "prensa-45", etiqueta: "Prensa 2", sector: "Sala pierna" },
-  { id: "e1", modelo: "extension-rodilla", etiqueta: "Camilla cuádriceps", sector: "Sala pierna" },
-  { id: "j1", modelo: "jalon-pecho", etiqueta: "Jalón", sector: "Sala espalda" },
-  { id: "r1", modelo: "remo-sentado", etiqueta: "Remo bajo", sector: "Sala espalda" },
-  { id: "b1", modelo: "press-pecho", etiqueta: "Press pecho", sector: "Sala empuje" },
-  { id: "h1", modelo: "press-hombro", etiqueta: "Press hombro", sector: "Sala empuje" },
+  {
+    id: "p1", codigo: "QVX-CERRO-PR-023", sucursal: "cerro", modelo: "prensa-45",
+    etiqueta: "Prensa 1", sector: "Sala pierna", estado: "operativa", cadaDias: 30,
+    ultimoServicio: { fecha: "2026-08-14", tecnico: "M. Ávila", problema: "Engrase de guías" },
+  },
+  {
+    id: "p2", codigo: "QVX-CERRO-PR-024", sucursal: "cerro", modelo: "prensa-45",
+    etiqueta: "Prensa 2", sector: "Sala pierna", estado: "observacion", cadaDias: 30,
+    ultimoServicio: { fecha: "2026-07-02", tecnico: "M. Ávila", problema: "Cambio de traba lateral", repuesto: "Traba 12 mm" },
+  },
+  {
+    id: "e1", codigo: "QVX-CERRO-EX-011", sucursal: "cerro", modelo: "extension-rodilla",
+    etiqueta: "Camilla cuádriceps", sector: "Sala pierna", estado: "operativa", cadaDias: 45,
+    ultimoServicio: { fecha: "2026-08-28", tecnico: "R. Paz", problema: "Ajuste de rodillo" },
+  },
+  {
+    id: "j1", codigo: "QVX-CERRO-JA-006", sucursal: "cerro", modelo: "jalon-pecho",
+    etiqueta: "Jalón", sector: "Sala espalda", estado: "operativa", cadaDias: 30,
+    ultimoServicio: { fecha: "2026-06-19", tecnico: "R. Paz", problema: "Cambio de cable", repuesto: "Cable 5 mm · 3,2 m" },
+  },
+  {
+    id: "r1", codigo: "QVX-CERRO-RE-004", sucursal: "cerro", modelo: "remo-sentado",
+    etiqueta: "Remo bajo", sector: "Sala espalda", estado: "operativa", cadaDias: 30,
+  },
+  {
+    id: "b1", codigo: "QVX-CERRO-PP-009", sucursal: "cerro", modelo: "press-pecho",
+    etiqueta: "Press pecho", sector: "Sala empuje", estado: "operativa", cadaDias: 30,
+    ultimoServicio: { fecha: "2026-08-30", tecnico: "M. Ávila", problema: "Tapizado del respaldo", repuesto: "Tapizado" },
+  },
+  {
+    id: "h1", codigo: "QVX-CERRO-PH-002", sucursal: "cerro", modelo: "press-hombro",
+    etiqueta: "Press hombro", sector: "Sala empuje", estado: "fuera-de-servicio", cadaDias: 30,
+    ultimoServicio: { fecha: "2026-05-11", tecnico: "R. Paz", problema: "Revisión general" },
+  },
+  {
+    id: "n1", codigo: "QVX-NCBA-PR-001", sucursal: "nueva-cba", modelo: "prensa-45",
+    etiqueta: "Prensa", sector: "Planta baja", estado: "operativa", cadaDias: 30,
+    ultimoServicio: { fecha: "2026-09-01", tecnico: "L. Sosa", problema: "Engrase de guías" },
+  },
+  {
+    id: "n2", codigo: "QVX-NCBA-JA-002", sucursal: "nueva-cba", modelo: "jalon-pecho",
+    etiqueta: "Jalón", sector: "Planta alta", estado: "operativa", cadaDias: 30,
+  },
+  {
+    id: "n3", codigo: "QVX-NCBA-PP-003", sucursal: "nueva-cba", modelo: "press-pecho",
+    etiqueta: "Press pecho", sector: "Planta alta", estado: "operativa", cadaDias: 30,
+    ultimoServicio: { fecha: "2026-04-20", tecnico: "L. Sosa", problema: "Cambio de polea", repuesto: "Polea 90 mm" },
+  },
 ];
 
 export function buscarMaquina(id: string): { maquina: Maquina; modelo: Modelo } | null {
@@ -701,13 +754,35 @@ export function buscarMaquina(id: string): { maquina: Maquina; modelo: Modelo } 
   return modelo ? { maquina, modelo } : null;
 }
 
+export function buscarModelo(id: string): Modelo | undefined {
+  return MODELOS.find((m) => m.id === id);
+}
+
+export function nombreSucursal(id: string): string {
+  return SUCURSALES.find((s) => s.id === id)?.nombre ?? id;
+}
+
 /** Cuántas unidades comparten cada modelo. Es el argumento del catálogo. */
 export function unidadesPorModelo(modeloId: string): number {
   return MAQUINAS.filter((m) => m.modelo === modeloId).length;
 }
 
-/** Qué músculos se pueden entrenar en este gimnasio y en qué máquinas. */
+/** Qué músculos se pueden entrenar y en qué máquinas. */
 export function maquinasPorMusculo(musculo: Musculo): Maquina[] {
   const modelos = MODELOS.filter((m) => m.musculos.includes(musculo)).map((m) => m.id);
   return MAQUINAS.filter((m) => modelos.includes(m.modelo));
+}
+
+/**
+ * Cuándo toca la próxima revisión.
+ *
+ * Se calcula, no se guarda: una fecha guardada queda vieja el día que alguien
+ * cambia la frecuencia y nadie recalcula la tabla.
+ */
+export function proximoServicio(maquina: Maquina): { fecha: Date; diasRestantes: number } | null {
+  if (!maquina.ultimoServicio) return null;
+  const fecha = new Date(maquina.ultimoServicio.fecha);
+  fecha.setDate(fecha.getDate() + maquina.cadaDias);
+  const diasRestantes = Math.round((fecha.getTime() - Date.now()) / 86400000);
+  return { fecha, diasRestantes };
 }

@@ -75,8 +75,8 @@ export default function Inicio() {
         <Link className="secundaria" href="/tags">
           Qué grabar en cada chip
         </Link>
-        <Link className="secundaria" href="/tablero">
-          Panel del gimnasio
+        <Link className="secundaria" href="/panel">
+          Panel de operaciones
         </Link>
       </div>
     </main>

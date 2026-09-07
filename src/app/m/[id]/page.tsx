@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MAQUINAS, buscarMaquina } from "@/datos/catalogo";
 import { Objetivo } from "@/componentes/Objetivo";
+import { Plan } from "@/componentes/Plan";
+import { Estado } from "@/componentes/Estado";
 import { Dolor } from "@/componentes/Dolor";
 import { Reportar } from "@/componentes/Reportar";
 import { Lectura } from "@/componentes/Lectura";
@@ -43,6 +45,7 @@ export default async function Ficha({ params }: { params: Promise<{ id: string }
   return (
     <main className="marco">
       <Lectura maquina={maquina.id} />
+      <Estado maquina={maquina.id} inicial={maquina.estado} />
 
       <header className="cabecera">
         <div className="migas">
@@ -53,6 +56,7 @@ export default async function Ficha({ params }: { params: Promise<{ id: string }
         </div>
         <h1>{modelo.nombre}</h1>
         <p className="suave">{modelo.resumen}</p>
+        <p className="codigo">{maquina.codigo}</p>
       </header>
 
       <section className="panel">
@@ -70,6 +74,8 @@ export default async function Ficha({ params }: { params: Promise<{ id: string }
           ))}
         </div>
       </section>
+
+      <Plan modelo={modelo.id} />
 
       <Objetivo modelo={modelo} />
 
