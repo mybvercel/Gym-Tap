@@ -801,3 +801,13 @@ p { margin: 0; }
 }
 
 .cifra.corta { font-size: 1.125rem; }
+
+/* El codigo de una tarjeta sin asignar: se lee de lejos para poder dictarlo. */
+.codigo-grande {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: clamp(2.5rem, 14vw, 4rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--ambar);
+  margin: 0.5rem 0;
+}

@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx pruebas/reglas.test.ts"
+    "test": "tsx pruebas/reglas.test.ts",
+    "qr": "node scripts/generar-qr.mjs"
   },
   "dependencies": {
     "next": "16.3.2",
@@ -22,6 +23,8 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.2",
+    "jsqr": "^1.4.0",
+    "pngjs": "^7.0.0",
     "tsx": "^4.23.13",
     "typescript": "^5"
   }
