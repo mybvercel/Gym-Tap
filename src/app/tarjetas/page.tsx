@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import QRCode from "qrcode/lib/browser";
 import { MAQUINAS, SUCURSALES, buscarModelo, nombreSucursal } from "@/datos/catalogo";
+import { codigoDeMaquina, urlDeCodigo } from "@/datos/codigos";
 import type { Maquina } from "@/datos/tipos";
 import { IconoNFC, PressBarra, Sentadilla } from "@/componentes/Figuras";
 import "./tarjeta.css";
@@ -30,13 +31,6 @@ const LOGO: string | null = null;
  * fuentes para el mismo dato es garantía de que alguna vez no coincidan.
  */
 export default function Tarjetas() {
-  // El origen es un valor del navegador, no estado de la pantalla: copiarlo
-  // dentro de un efecto cuesta un render extra y el compilador lo marca.
-  const origen = useSyncExternalStore(
-    () => () => {},
-    () => window.location.origin,
-    () => "",
-  );
   const [sucursal, setSucursal] = useState("todas");
   const [tema, setTema] = useState<"negro" | "claro">("negro");
 
@@ -101,7 +95,7 @@ export default function Tarjetas() {
           <Tarjeta
             key={m.id}
             maquina={m}
-            url={`${origen}/m/${m.id}`}
+            url={urlDeCodigo(codigoDeMaquina(m.id)?.codigo ?? "")}
             tema={tema}
             indice={`${String(i + 1).padStart(2, "0")} / ${String(maquinas.length).padStart(2, "0")}`}
           />
@@ -201,7 +195,9 @@ function Tarjeta({
 
       <footer className="t-pie">
         <span className="t-codigo">{maquina.codigo}</span>
-        <span className="t-sector">{maquina.sector}</span>
+        {/* El código corto es el que se dicta por teléfono para asignar la
+            tarjeta. El largo es el de inventario. */}
+        <span className="t-sector">{codigoDeMaquina(maquina.id)?.codigo}</span>
         <span className="t-pie-der">{indice}</span>
       </footer>
     </article>
