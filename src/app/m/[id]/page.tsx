@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MAQUINAS, buscarMaquina } from "@/datos/catalogo";
-import { Objetivo } from "@/componentes/Objetivo";
+import { Entrenar } from "@/componentes/Entrenar";
 import { Plan } from "@/componentes/Plan";
 import { Estado } from "@/componentes/Estado";
 import { Dolor } from "@/componentes/Dolor";
@@ -9,15 +9,16 @@ import { Reportar } from "@/componentes/Reportar";
 import { Lectura } from "@/componentes/Lectura";
 
 /**
- * La ficha: el destino del chip de esta máquina.
+ * La ficha: el destino del código de esta máquina.
  *
  * Se genera estática, una por unidad física. El contenido llega ya escrito
  * dentro del HTML: sin consultas, sin esqueletos de carga y sin esperar a que
  * el JavaScript se hidrate para poder leer a qué altura va el asiento.
  *
- * El orden de los bloques no es decorativo. Primero lo que la persona vino a
- * buscar (cómo se regula), después lo que puede lastimarla, después lo que la
- * máquina sabe hacer y que casi nadie sabe.
+ * El orden sale de la única pregunta que trae a alguien hasta acá. A una
+ * máquina se llega por dos motivos que compiten: entrenar mejor, o avisar que
+ * se rompió. El segundo tiene su propio botón flotante para no obligar a
+ * scrollear; el primero manda en la página.
  */
 export function generateStaticParams() {
   return MAQUINAS.map((m) => ({ id: m.id }));
@@ -42,8 +43,38 @@ export default async function Ficha({ params }: { params: Promise<{ id: string }
 
   const { maquina, modelo } = ficha;
 
+  /* Se arma en el servidor y se le pasa a `Entrenar`, que decide cuándo
+     mostrarlo. Así el instructivo sigue siendo HTML estático. */
+  const comoSeUsa = (
+    <section className="panel">
+      <p className="rotulo">Cómo se usa</p>
+
+      {/* El video no se precarga nunca: son 280 KB que arruinan la carga de
+          alguien que solo quería saber la altura del asiento. */}
+      <div className="video">
+        <p className="suave chico">10 segundos, sin audio, en bucle</p>
+        <p className="chico" style={{ color: "var(--texto-tenue)" }}>
+          Se graba en el gimnasio, con esta misma máquina.
+        </p>
+      </div>
+
+      <div className="pasos">
+        {modelo.pasos.map((paso, i) => (
+          <div className="paso" key={i}>
+            <span className="paso-num" aria-hidden="true">{i + 1}</span>
+            <div>
+              <h2>{paso.titulo}</h2>
+              <p className="paso-detalle">{paso.detalle}</p>
+              {paso.referencia && <span className="referencia">{paso.referencia}</span>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+
   return (
-    <main className="marco">
+    <main className="marco con-flotante">
       <Lectura maquina={maquina.id} />
       <Estado maquina={maquina.id} inicial={maquina.estado} />
 
@@ -56,31 +87,12 @@ export default async function Ficha({ params }: { params: Promise<{ id: string }
         </div>
         <h1>{modelo.nombre}</h1>
         <p className="suave">{modelo.resumen}</p>
-        <p className="codigo">{maquina.codigo}</p>
       </header>
 
-      <section className="panel">
-        <p className="rotulo">Regulá la máquina</p>
-        <div className="pasos">
-          {modelo.pasos.map((paso, i) => (
-            <div className="paso" key={i}>
-              <span className="paso-num" aria-hidden="true">{i + 1}</span>
-              <div>
-                <h2>{paso.titulo}</h2>
-                <p className="paso-detalle">{paso.detalle}</p>
-                {paso.referencia && <span className="referencia">{paso.referencia}</span>}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      <Entrenar modelo={modelo}>{comoSeUsa}</Entrenar>
 
-      <Plan modelo={modelo.id} />
-
-      <Objetivo modelo={modelo} />
-
-      {/* Los errores van antes que el video: el video se mira una vez, el
-          error se comete todas las series. */}
+      {/* Los errores no se esconden nunca detrás de una selección: el video se
+          mira una vez, el error se comete todas las series. */}
       <section className="panel">
         <p className="rotulo">No hagas esto</p>
         <div className="errores">
@@ -95,6 +107,10 @@ export default async function Ficha({ params }: { params: Promise<{ id: string }
         </div>
       </section>
 
+      <Plan modelo={modelo.id} />
+
+      <Dolor modelo={modelo} />
+
       {/* Lo que no cambia. Es lo que separa una ficha seria de una copiada de
           internet, donde estos mitos se repiten como si fueran técnica. */}
       <section className="panel">
@@ -107,36 +123,11 @@ export default async function Ficha({ params }: { params: Promise<{ id: string }
         ))}
       </section>
 
-      <Dolor modelo={modelo} />
+      <Link className="secundaria enlace" href="/">
+        Ver todas las máquinas
+      </Link>
 
-      <section className="panel">
-        <p className="rotulo">Técnica en video</p>
-        {/* El video no se precarga nunca: son 280 KB que arruinan la carga de
-            alguien que solo quería saber la altura del asiento. */}
-        <div className="video">
-          <p className="suave chico">10 segundos, sin audio, en bucle</p>
-          <p className="chico" style={{ color: "var(--texto-tenue)" }}>
-            Se graba en el gimnasio, con esta misma máquina.
-          </p>
-        </div>
-      </section>
-
-      <div className="lista">
-        {/* Contrato por URL, no API compartida: la app de carga usa lo que
-            entiende y puede ignorar el resto sin romperse. */}
-        <a
-          className="accion"
-          href={`https://gym-tap.vercel.app/?m=${maquina.id}&e=${modelo.ejercicio}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Cargar en mi rutina
-        </a>
-        <Reportar maquina={maquina.id} etiqueta={maquina.etiqueta} />
-        <Link className="secundaria" href="/">
-          Ver todas las máquinas
-        </Link>
-      </div>
+      <Reportar maquina={maquina.id} etiqueta={maquina.etiqueta} />
     </main>
   );
 }
