@@ -1059,3 +1059,64 @@ p { margin: 0; }
   padding-left: 0.9rem;
   border-left: 2px solid var(--linea);
 }
+
+/* ===================================================================
+   Composicion centrada.
+
+   Se centra lo que se lee de un vistazo: titulos, rotulos, cifras y las
+   filas de botones. Los parrafos largos siguen alineados a la izquierda
+   a proposito: con texto centrado, cada renglon arranca en un lugar
+   distinto y el ojo tiene que buscar donde empieza el siguiente. En una
+   pantalla que se lee parado y apurado, eso se paga caro.
+   =================================================================== */
+
+.portada {
+  justify-items: center;
+  text-align: center;
+}
+
+.portada .resumen { max-width: 32ch; }
+
+.migas { justify-content: center; }
+
+.titulo-seccion { text-align: center; }
+
+/* `safe` evita que al desbordar se corte el primer boton de la fila. */
+.chips { justify-content: safe center; }
+
+.aclaracion {
+  text-align: center;
+  border-left: 0;
+  padding-left: 0;
+  max-width: 40ch;
+  margin-inline: auto;
+}
+
+.mito-suelto { text-align: center; }
+
+.variante-titulo { justify-content: center; }
+
+.riesgo {
+  text-align: center;
+  border-left: 0;
+  padding-left: 0;
+  /* El filete pasa arriba: al centrar, un borde lateral queda descolgado. */
+  border-top: 3px solid var(--peligro);
+  padding-top: 0.9rem;
+}
+
+.riesgo[data-gravedad="desgaste"] { border-top-color: var(--ambar); }
+.riesgo[data-gravedad="sin-estimulo"] { border-top-color: var(--linea); }
+
+.pauta { text-align: center; }
+.progresion { text-align: center; border-left: 0; }
+.exito, .aviso { text-align: center; justify-items: center; }
+.enlace-tenue { justify-self: center; }
+
+/* La instruccion es corta y se lee de un vistazo: va centrada como los
+   titulos. El por que y el hasta donde son parrafos y quedan a la izquierda. */
+.variante .ajuste { text-align: center; }
+.paso h3, .paso .referencia { text-align: center; }
+.paso > div { display: grid; justify-items: center; }
+.paso { grid-template-columns: 1fr; justify-items: center; gap: 0.5rem; }
+.paso-detalle { text-align: center; max-width: 34ch; }
