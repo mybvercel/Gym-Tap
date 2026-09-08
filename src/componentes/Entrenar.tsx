@@ -8,12 +8,13 @@ import { Diagrama } from "./Diagrama";
 /**
  * Lo primero que ve alguien que escaneó: qué trabaja esta máquina.
  *
- * El orden responde a la única pregunta que trae a una persona hasta acá. Si
- * ya sabe usar la máquina, viene a saber qué músculo le pega y cómo cambiarlo;
- * si no sabe, viene a que le expliquen. Por eso el mapa está arriba y las
- * instrucciones aparecen abajo mientras no haya elegido nada: el que sabe no
- * tiene que pasar por encima de un instructivo que no necesita, y el que no
- * sabe lo encuentra sin buscar.
+ * El mapa va sin caja, apoyado en el fondo. Es la portada de la pantalla y
+ * meterlo adentro de una tarjeta lo pone al mismo nivel que el resto, que es
+ * justo lo que no queremos: acá se decide todo lo que sigue.
+ *
+ * Los músculos son una fila que se desliza y no una grilla de botones. Una
+ * grilla de dos por dos se lee como formulario; esto es un filtro, y un filtro
+ * se ve como una fila de píldoras.
  */
 export function Entrenar({ modelo, children }: { modelo: Modelo; children: React.ReactNode }) {
   const [foco, setFoco] = useState<Musculo | null>(null);
@@ -21,34 +22,32 @@ export function Entrenar({ modelo, children }: { modelo: Modelo; children: React
 
   return (
     <>
-      <section className="panel">
-        <p className="rotulo">Qué trabaja esta máquina</p>
-        <MapaMuscular trabaja={modelo.musculos} foco={foco} />
+      <MapaMuscular trabaja={modelo.musculos} foco={foco} />
 
-        <div className="zonas">
-          {modelo.musculos.map((m) => (
-            <button
-              key={m}
-              type="button"
-              className="zona"
-              aria-pressed={foco === m}
-              onClick={() => setFoco(foco === m ? null : m)}
-            >
-              {MUSCULOS[m]}
-            </button>
-          ))}
-        </div>
-
-        <p className="chico suave">
-          {foco
-            ? "Tocá de nuevo para volver a las instrucciones de la máquina."
-            : "Tocá un músculo y te digo cómo regularla para que se lo lleve él."}
-        </p>
-      </section>
+      <div className="chips">
+        {modelo.musculos.map((m) => (
+          <button
+            key={m}
+            type="button"
+            className="chip-musculo"
+            aria-pressed={foco === m}
+            onClick={() => setFoco(foco === m ? null : m)}
+          >
+            {MUSCULOS[m]}
+          </button>
+        ))}
+      </div>
 
       {foco ? (
-        <section className="panel">
-          <p className="rotulo">Para {MUSCULOS[foco].toLowerCase()}</p>
+        <section className="seccion">
+          <h2 className="titulo-seccion">Para {MUSCULOS[foco].toLowerCase()}</h2>
+
+          {/* La verdad que evita que alguien crea que cambió de ejercicio. */}
+          <p className="aclaracion">
+            Con esta máquina siempre trabajás todo. Mover los apoyos no aísla
+            nada: corre el reparto para que se lo lleve más{" "}
+            {MUSCULOS[foco].toLowerCase()}.
+          </p>
 
           <div className="variantes">
             {variantes.map((v) => (
@@ -83,11 +82,6 @@ export function Entrenar({ modelo, children }: { modelo: Modelo; children: React
               </article>
             ))}
           </div>
-
-          <p className="suave chico">
-            Ninguna posición aísla un músculo: cambia el reparto del trabajo, no
-            el ejercicio.
-          </p>
         </section>
       ) : (
         /* Sin selección, lo que corresponde es enseñar a usarla. Llega ya

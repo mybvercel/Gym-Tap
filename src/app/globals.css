@@ -9,19 +9,19 @@
    ------------------------------------------------------------------- */
 
 :root {
-  --fondo: #0d1117;
-  --panel: #161c24;
-  --panel-alto: #1f2731;
-  --linea: #2a333e;
+  --fondo: #0b0d0f;
+  --panel: #14171b;
+  --panel-alto: #1c2026;
+  --linea: #262a31;
 
   --texto: #eef2f6;
   --texto-suave: #a6b2be;
   --texto-tenue: #6f7d8a;
 
-  --ambar: #f5a524;
-  --ambar-oscuro: #d18a12;
+  --ambar: #ffbd00;
+  --ambar-oscuro: #d99f00;
   --sobre-ambar: #14100a;
-  --ambar-lavado: #2a2113;
+  --ambar-lavado: #2b2310;
 
   --peligro: #ff7a66;
   --peligro-lavado: #2e1a17;
@@ -828,7 +828,7 @@ p { margin: 0; }
 
 /* ================================================== Mapa muscular */
 :root {
-  --musculo: #ff4d3d;
+  --musculo: #ffbd00;
   --cuerpo: #7d8894;
 }
 
@@ -879,6 +879,9 @@ p { margin: 0; }
   .mapa .m { transition: none; }
 }
 
+/* El boton de reporte es lo unico rojo de la pantalla. */
+:root { --alerta: #ff4d3d; }
+
 /* ============================================== Boton flotante */
 /* Deja aire abajo para que el flotante no tape la ultima fila. */
 .con-flotante { padding-bottom: calc(6rem + env(safe-area-inset-bottom)); }
@@ -898,7 +901,7 @@ p { margin: 0; }
   cursor: pointer;
 
   /* Rojo: es la unica cosa de la pantalla que no es de marca, a proposito. */
-  background: var(--musculo);
+  background: var(--alerta);
   color: #fff;
   box-shadow: 0 6px 20px -6px rgba(255, 77, 61, 0.6), 0 2px 6px rgba(0, 0, 0, 0.4);
   transition: transform 140ms var(--curva), background-color 160ms ease;
@@ -912,3 +915,147 @@ p { margin: 0; }
 }
 
 .flotante svg { width: 26px; height: 26px; display: block; }
+
+/* ===================================================================
+   Estructura de la ficha.
+
+   La regla que ordena todo: NO todo es una tarjeta. Cuando cada bloque
+   tiene el mismo borde, el mismo radio y el mismo fondo, ninguno pesa
+   mas que otro y la pantalla se lee como una planilla.
+
+   Aca hay cuatro tratamientos distintos y cada uno significa algo:
+     - Portada y numeros: sin caja, apoyados en el fondo.
+     - Tarjeta: lo que es una unidad que se consulta (como se usa, dolor).
+     - Tira con borde lateral: lo que advierte.
+     - Texto suelto con filete: lo que corrige una creencia.
+   =================================================================== */
+
+.marca-app {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 0.25rem;
+}
+
+.marca-logo {
+  font-size: 1.0625rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  color: var(--ambar);
+  margin: 0;
+}
+
+.marca-sede {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+/* ------------------------------------------------------------ Portada */
+.portada {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.25rem 0 0.5rem;
+}
+
+.portada h1 {
+  font-size: 2rem;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+
+.portada .resumen {
+  color: var(--texto-suave);
+  font-size: 0.9375rem;
+  max-width: 34ch;
+}
+
+/* Un solo rotulo en mayusculas por region, no uno por seccion. */
+.titulo-seccion {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.75rem;
+}
+
+.seccion { display: grid; gap: 0.75rem; }
+.seccion + .seccion { margin-top: 0.5rem; }
+
+/* -------------------------------------------------------------- Chips */
+/* Fila que se desliza, no una grilla de botones: una grilla 2x2 se lee
+   como formulario y esto es un filtro. */
+.chips {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.25rem 1rem 0.5rem;
+  margin-inline: -1rem;
+  scrollbar-width: none;
+}
+
+.chips::-webkit-scrollbar { display: none; }
+
+.chip-musculo {
+  flex: 0 0 auto;
+  min-height: 48px;
+  padding-inline: 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--linea);
+  background: transparent;
+  color: var(--texto-suave);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+.chip-musculo[aria-pressed="true"] {
+  background: var(--ambar);
+  border-color: var(--ambar);
+  color: var(--sobre-ambar);
+}
+
+/* ------------------------------------------------------------ Riesgos */
+/* Sin caja: una tira con filete al costado. El color dice la gravedad. */
+.riesgo {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.15rem 0 0.15rem 0.9rem;
+  border-left: 3px solid var(--peligro);
+}
+
+.riesgo + .riesgo { margin-top: 1rem; }
+.riesgo[data-gravedad="desgaste"] { border-left-color: var(--ambar); }
+.riesgo[data-gravedad="sin-estimulo"] { border-left-color: var(--linea); }
+
+.riesgo .marca { color: var(--peligro); }
+.riesgo[data-gravedad="desgaste"] .marca { color: var(--ambar); }
+.riesgo[data-gravedad="sin-estimulo"] .marca { color: var(--texto-tenue); }
+
+.riesgo h3 { font-size: 1rem; font-weight: 700; }
+.riesgo p { font-size: 0.9375rem; color: var(--texto-suave); }
+.riesgo .correccion { color: var(--texto); font-weight: 600; }
+
+/* ------------------------------------------------------------- Mitos */
+.mito-suelto {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--linea);
+}
+
+.mito-suelto:first-of-type { border-top: 0; padding-top: 0; }
+
+/* ------------------------------------------------------------ Aclaracion */
+/* La frase que evita que alguien crea que una posicion aisla un musculo. */
+.aclaracion {
+  font-size: 0.875rem;
+  color: var(--texto-tenue);
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--linea);
+}

@@ -47,14 +47,14 @@ export function Plan({ modelo, unidad = "kg" }: { modelo: string; unidad?: strin
 
   return (
     <section className="panel">
-      <p className="rotulo">¿Qué buscás hoy?</p>
+      <h2 className="titulo-seccion">¿Qué buscás hoy?</h2>
 
-      <div className="zonas">
+      <div className="chips">
         {PAUTAS.map((p) => (
           <button
             key={p.id}
             type="button"
-            className="zona"
+            className="chip-musculo"
             aria-pressed={objetivo === p.id}
             onClick={() => {
               setObjetivo(p.id);

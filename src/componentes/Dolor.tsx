@@ -17,13 +17,13 @@ export function Dolor({ modelo }: { modelo: Modelo }) {
 
   return (
     <section className="panel">
-      <p className="rotulo">¿Te molesta algo?</p>
-      <div className="zonas">
+      <h2 className="titulo-seccion">¿Te molesta algo?</h2>
+      <div className="chips">
         {cargadas.map((z) => (
           <button
             key={z.id}
             type="button"
-            className="zona"
+            className="chip-musculo"
             aria-pressed={zona === z.id}
             onClick={() => setZona(zona === z.id ? null : z.id)}
           >
