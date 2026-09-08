@@ -1,28 +1,31 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Inter_Tight } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { SinRed } from "@/componentes/SinRed";
 
 /**
+ * Montserrat en toda la app.
+ *
  * La clase va en <html> y no en <body>: la variable de la fuente se resuelve
  * en :root, y puesta en el body queda por debajo de donde se la usa.
  */
-const fuente = Inter_Tight({
+const fuente = Montserrat({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
   variable: "--font-sans",
   display: "swap",
 });
 
 /**
- * La tarjeta usa la tipografía de Qivox.
+ * La tipografía de la tarjeta impresa, la misma que la de la app.
  *
- * Sus títulos son Graphik, que es licenciada y no se puede distribuir. Inter es
- * lo que su propio sitio sirve para todo lo demás y lo que usa cuando Graphik
- * no carga, así que es la sustituta correcta: misma familia neo-grotesca, mismo
- * aire. Si consiguen la licencia de Graphik, se cambia una línea.
+ * Los títulos de Qivox son Graphik, que es licenciada y no se puede
+ * distribuir. Montserrat es la elegida como reemplazo: geométrica, con
+ * mayúsculas anchas que aguantan el peso 800 del titular, y muy distinta de
+ * las grotescas de sistema que se ven en todos lados.
  */
-const tarjeta = Inter({
+const tarjeta = Montserrat({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800", "900"],
   variable: "--font-tarjeta",
