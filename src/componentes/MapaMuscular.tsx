@@ -7,21 +7,21 @@ import type { Musculo } from "@/datos/tipos";
  * Está dibujado y no es una imagen por una razón que decide todo: hay que
  * poder encender un músculo distinto según la máquina y según lo que la
  * persona elija. Con imágenes harían falta diez versiones por máquina, todas
- * distintas entre sí y ninguna actualizable. Acá cada músculo es una figura
- * con nombre y se pinta sola a partir de los datos.
+ * distintas entre sí y ninguna actualizable.
  *
- * La técnica: el contorno del cuerpo se define una vez como recorte, y los
- * músculos se dibujan como formas simples por encima. El recorte los ajusta al
- * borde del cuerpo, así que las formas pueden ser redondeadas y sencillas y aun
- * así quedan prolijas. Sin eso habría que dibujar a mano el contorno exacto de
- * cada músculo, que es donde este tipo de gráfico se vuelve imposible de
- * mantener.
+ * Dos decisiones de dibujo que hacen que se vea anatómico y no como burbujas:
  *
- * Un detalle que cuesta una tarde si no se sabe: dentro de un `clipPath` solo
- * valen figuras sueltas. Un `<g>` ahí adentro el navegador lo ignora, el
- * recorte queda vacío y desaparece todo el dibujo sin ningún error. Por eso las
- * figuras del contorno van directas y el desplazamiento de cada cuerpo se hace
- * afuera: el recorte se resuelve en el espacio ya desplazado.
+ * 1. Cada músculo lleva un borde del color del fondo. Eso abre una costura
+ *    entre grupos vecinos, que es exactamente lo que separa un dibujo
+ *    anatómico de un montón de manchas pegadas.
+ *
+ * 2. Se dibuja media persona y se refleja. Un cuerpo asimétrico se nota al
+ *    instante aunque nadie sepa decir por qué, y ajustar dos lados a mano
+ *    garantiza que en algún momento dejen de coincidir. Acá la simetría es
+ *    imposible de romper.
+ *
+ * La silueta va aparte, como recorte, así los músculos pueden pasarse de
+ * los bordes sin que se vea: quedan cortados justo en el contorno.
  */
 
 interface Props {
@@ -31,20 +31,21 @@ interface Props {
   foco?: Musculo | null;
 }
 
+/** El eje de simetría de cada figura. Todo se refleja contra esta línea. */
+const EJE = 200;
+
 export function MapaMuscular({ trabaja, foco }: Props) {
   /**
-   * Tres estados y no dos: el músculo elegido va en rojo pleno, los otros que
-   * la máquina también trabaja quedan en un rojo apagado, y el resto es cuerpo.
-   * Sin el estado del medio se pierde la respuesta a "qué más hace esta
-   * máquina", que es justo lo que vino a ver la persona.
+   * Tres estados y no dos: el elegido en rojo pleno, los otros que la máquina
+   * también trabaja en rojo apagado, y el resto en gris. Sin el estado del
+   * medio se pierde la respuesta a "qué más hace esta máquina".
    */
-  const estado = (m: Musculo) =>
-    foco === m ? "foco" : trabaja.includes(m) ? "trabaja" : "neutro";
+  const e = (m: Musculo) => (foco === m ? "foco" : trabaja.includes(m) ? "trabaja" : "neutro");
 
   return (
     <svg
       className="mapa"
-      viewBox="0 0 264 316"
+      viewBox="0 0 420 500"
       role="img"
       aria-label={
         foco
@@ -53,95 +54,133 @@ export function MapaMuscular({ trabaja, foco }: Props) {
       }
     >
       <defs>
-        {/* De frente y de espalda la silueta es la misma: se define una vez. */}
-        <clipPath id="contorno-cuerpo">
-          <ellipse cx="60" cy="27" rx="15" ry="18" />
-          <rect x="52" y="38" width="16" height="18" rx="6" />
-          <path d="M36 60 Q60 45 84 60 L82 112 Q80 140 78 158 L42 158 Q40 140 38 112 Z" />
-          <rect x="17" y="58" width="20" height="122" rx="10" transform="rotate(5 27 119)" />
-          <rect x="83" y="58" width="20" height="122" rx="10" transform="rotate(-5 93 119)" />
-          <rect x="41" y="150" width="19" height="140" rx="9.5" transform="rotate(2 50 220)" />
-          <rect x="60" y="150" width="19" height="140" rx="9.5" transform="rotate(-2 70 220)" />
-        </clipPath>
+        <Silueta />
       </defs>
 
-      <g transform="translate(6 0)">
-        <Cuerpo>
-          <Frente estado={estado} />
-        </Cuerpo>
+      <g clipPath="url(#silueta)">
+        <rect className="mapa-cuerpo" x="0" y="0" width="200" height="480" />
+        <Frente e={e} />
       </g>
 
-      <g transform="translate(138 0)">
-        <Cuerpo>
-          <Espalda estado={estado} />
-        </Cuerpo>
+      <g transform="translate(220 0)">
+        <g clipPath="url(#silueta)">
+          <rect className="mapa-cuerpo" x="0" y="0" width="200" height="480" />
+          <Espalda e={e} />
+        </g>
       </g>
 
-      <text className="mapa-pie" x="66" y="310" textAnchor="middle">
+      <text className="mapa-pie" x="100" y="496" textAnchor="middle">
         FRENTE
       </text>
-      <text className="mapa-pie" x="198" y="310" textAnchor="middle">
+      <text className="mapa-pie" x="320" y="496" textAnchor="middle">
         ESPALDA
       </text>
     </svg>
   );
 }
 
-/** La silueta plana, y encima los músculos, los dos recortados al contorno. */
-function Cuerpo({ children }: { children: React.ReactNode }) {
+/**
+ * El contorno del cuerpo.
+ *
+ * De frente y de espalda la silueta es la misma, así que se define una vez.
+ * Adentro de un `clipPath` solo valen figuras sueltas: un `<g>` ahí el
+ * navegador lo ignora, el recorte queda vacío y desaparece todo el dibujo sin
+ * tirar ningún error. Por eso el brazo y la pierna se repiten con un
+ * `transform` propio en vez de agruparse.
+ */
+const BRAZO =
+  "M137 82 C152 85 161 99 161 118 C161 136 157 156 154 178 C153 188 152 196 153 206 C155 224 158 246 156 264 C160 278 161 294 155 301 C147 307 140 304 137 295 C134 283 135 271 136 261 C134 243 132 224 132 206 C131 196 131 188 132 178 C130 156 130 134 132 118 C132 102 135 88 137 82 Z";
+
+const PIERNA =
+  "M100 248 C118 246 133 252 139 264 C144 288 143 318 139 348 C137 362 134 372 133 382 C137 402 139 422 135 442 C133 454 131 460 129 466 C134 472 134 478 127 478 L109 478 C106 470 106 460 108 450 C111 426 113 406 111 382 C109 368 107 358 107 348 C104 316 100 280 100 248 Z";
+
+function Silueta() {
+  const espejo = `translate(${EJE} 0) scale(-1 1)`;
   return (
-    <g clipPath="url(#contorno-cuerpo)">
-      <rect className="mapa-cuerpo" x="0" y="0" width="120" height="300" />
-      {children}
-    </g>
+    <clipPath id="silueta">
+      <ellipse cx="100" cy="36" rx="21" ry="26" />
+      <path d="M89 52 L111 52 L114 76 L86 76 Z" />
+      {/* Tronco: hombros, cintura y cadera en una sola figura simétrica. */}
+      <path d="M88 68 L112 68 L141 85 C147 99 146 117 137 129 C132 148 129 160 127 174 C125 188 124 194 124 202 C124 218 130 236 136 252 L100 262 L64 252 C70 236 76 218 76 202 C76 194 75 188 73 174 C71 160 68 148 64 128 C53 117 54 99 59 85 Z" />
+      <path d={BRAZO} />
+      <path d={BRAZO} transform={espejo} />
+      <path d={PIERNA} />
+      <path d={PIERNA} transform={espejo} />
+    </clipPath>
   );
 }
 
-type Estado = (m: Musculo) => string;
+type Est = (m: Musculo) => string;
 
-function Frente({ estado }: { estado: Estado }) {
+/** Un músculo. El borde del color del fondo es lo que abre la costura. */
+function M({ m, d, e }: { m: Musculo; d: string; e: Est }) {
+  return <path className="m" data-e={e(m)} d={d} />;
+}
+
+/** Los pares se dibujan una vez y se reflejan: la simetría no se puede romper. */
+function Par({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <ellipse className="m" data-e={estado("hombro")} cx="36" cy="67" rx="13" ry="12" />
-      <ellipse className="m" data-e={estado("hombro")} cx="84" cy="67" rx="13" ry="12" />
-
-      <ellipse className="m" data-e={estado("pectoral")} cx="49" cy="81" rx="14" ry="13" />
-      <ellipse className="m" data-e={estado("pectoral")} cx="71" cy="81" rx="14" ry="13" />
-
-      <ellipse className="m" data-e={estado("biceps")} cx="26" cy="98" rx="10" ry="21" />
-      <ellipse className="m" data-e={estado("biceps")} cx="94" cy="98" rx="10" ry="21" />
-
-      {/* Aductores: la cara interna del muslo, entre las dos piernas. */}
-      <ellipse className="m" data-e={estado("aductores")} cx="56" cy="198" rx="6" ry="28" />
-      <ellipse className="m" data-e={estado("aductores")} cx="64" cy="198" rx="6" ry="28" />
-
-      <ellipse className="m" data-e={estado("cuadriceps")} cx="47" cy="206" rx="11" ry="38" />
-      <ellipse className="m" data-e={estado("cuadriceps")} cx="73" cy="206" rx="11" ry="38" />
+      {children}
+      <g transform={`translate(${EJE} 0) scale(-1 1)`}>{children}</g>
     </>
   );
 }
 
-function Espalda({ estado }: { estado: Estado }) {
+function Frente({ e }: { e: Est }) {
   return (
     <>
-      {/* Espalda alta: trapecio y romboides, lo que da el grosor. */}
-      <ellipse className="m" data-e={estado("espalda-alta")} cx="60" cy="68" rx="25" ry="16" />
+      {/* Trapecio visible desde el frente: el puente entre cuello y hombro. */}
+      <path className="m" data-e={e("espalda-alta")} d="M100 66 L126 78 L118 92 L100 88 L82 92 L74 78 Z" />
 
-      <ellipse className="m" data-e={estado("hombro")} cx="36" cy="67" rx="13" ry="12" />
-      <ellipse className="m" data-e={estado("hombro")} cx="84" cy="67" rx="13" ry="12" />
+      <Par>
+        <M m="hombro" e={e} d="M135 82 C151 85 162 99 163 118 C156 124 145 121 139 112 C135 101 134 89 135 82 Z" />
+        <M m="pectoral" e={e} d="M100 90 C114 86 129 89 135 100 C139 113 134 126 121 129 C109 131 102 124 100 115 Z" />
+        <M m="biceps" e={e} d="M137 124 C149 127 156 141 155 160 C154 174 149 182 143 181 C137 174 134 152 137 124 Z" />
+        <M m="triceps" e={e} d="M133 128 C129 146 130 166 134 180 C138 182 141 178 141 168 C140 150 138 136 133 128 Z" />
+      </Par>
 
-      {/* Dorsal: las alas que dan el ancho. */}
-      <ellipse className="m" data-e={estado("dorsal")} cx="47" cy="104" rx="15" ry="25" />
-      <ellipse className="m" data-e={estado("dorsal")} cx="73" cy="104" rx="15" ry="25" />
+      {/* Abdomen: la columna central con sus cortes, dibujada simétrica. */}
+      <path className="m abdomen" data-e="neutro" d="M87 132 L113 132 L115 176 L100 190 L85 176 Z" />
+      <path className="costura" d="M100 132 L100 188 M87 148 L113 148 M88 164 L112 164" />
 
-      <ellipse className="m" data-e={estado("triceps")} cx="26" cy="98" rx="10" ry="21" />
-      <ellipse className="m" data-e={estado("triceps")} cx="94" cy="98" rx="10" ry="21" />
+      <Par>
+        {/* Oblicuo: el costado que baja hacia la cadera. */}
+        <path className="m" data-e="neutro" d="M116 138 C126 142 130 158 128 178 C126 190 120 194 116 190 Z" />
+        <M m="aductores" e={e} d="M102 264 C109 272 112 294 110 318 C108 336 104 344 101 340 Z" />
+        <M m="cuadriceps" e={e} d="M107 258 C124 258 135 272 136 296 C137 320 132 344 125 356 C116 362 110 354 109 340 C105 314 105 282 107 258 Z" />
+        {/* Antebrazo y pantorrilla: no son objetivo, pero sin ellos el cuerpo
+            se ve incompleto y el dibujo pierde credibilidad. */}
+        <path className="m" data-e="neutro" d="M136 190 C148 194 156 210 157 230 C156 248 150 256 144 254 C137 244 134 214 136 190 Z" />
+        <path className="m" data-e="neutro" d="M112 388 C126 390 133 406 133 426 C132 442 127 450 121 448 C113 442 111 410 112 388 Z" />
+      </Par>
+    </>
+  );
+}
 
-      <ellipse className="m" data-e={estado("gluteo")} cx="50" cy="168" rx="13" ry="15" />
-      <ellipse className="m" data-e={estado("gluteo")} cx="70" cy="168" rx="13" ry="15" />
+function Espalda({ e }: { e: Est }) {
+  return (
+    <>
+      {/* Trapecio: el diamante que domina la espalda alta. */}
+      <path
+        className="m"
+        data-e={e("espalda-alta")}
+        d="M100 64 L128 80 C134 100 128 124 112 136 L100 142 L88 136 C72 124 66 100 72 80 Z"
+      />
 
-      <ellipse className="m" data-e={estado("isquios")} cx="48" cy="212" rx="12" ry="34" />
-      <ellipse className="m" data-e={estado("isquios")} cx="72" cy="212" rx="12" ry="34" />
+      <Par>
+        <M m="hombro" e={e} d="M135 82 C151 85 162 99 163 118 C156 124 145 121 139 112 C135 101 134 89 135 82 Z" />
+        <M m="dorsal" e={e} d="M118 118 C131 124 137 142 133 164 C129 182 116 192 105 188 L103 142 Z" />
+        <M m="triceps" e={e} d="M137 124 C150 128 157 144 155 163 C153 176 147 183 142 179 C136 164 134 140 137 124 Z" />
+        <M m="gluteo" e={e} d="M102 224 C121 221 136 233 136 253 C136 270 124 279 111 276 C102 271 100 250 102 224 Z" />
+        <M m="isquios" e={e} d="M107 282 C124 282 134 296 135 318 C135 342 130 360 124 366 C115 370 110 360 109 342 C105 320 105 300 107 282 Z" />
+        <path className="m" data-e="neutro" d="M136 190 C148 194 156 210 157 230 C156 248 150 256 144 254 C137 244 134 214 136 190 Z" />
+        <path className="m" data-e="neutro" d="M110 386 C126 388 134 406 134 428 C133 444 127 452 121 450 C112 444 109 410 110 386 Z" />
+      </Par>
+
+      {/* Zona lumbar. */}
+      <path className="m" data-e="neutro" d="M90 150 L110 150 C114 170 116 190 112 208 L100 220 L88 208 C84 190 86 170 90 150 Z" />
+      <path className="costura" d="M100 156 L100 214" />
     </>
   );
 }

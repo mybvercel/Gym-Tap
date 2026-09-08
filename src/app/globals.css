@@ -815,38 +815,49 @@ p { margin: 0; }
 /* ================================================== Mapa muscular */
 :root {
   --musculo: #ff4d3d;
+  --cuerpo: #7d8894;
 }
 
 .mapa {
   display: block;
   width: 100%;
-  max-width: 21rem;
+  max-width: 22rem;
   margin-inline: auto;
   height: auto;
 }
 
-/* La silueta: un solo tono plano, para que el rojo sea lo unico que se mira. */
-.mapa-cuerpo { fill: var(--panel-alto); }
+/* La silueta base: gris de maniqui, sin protagonismo. */
+.mapa-cuerpo { fill: var(--cuerpo); }
 
 .mapa .m {
-  /* Apagado: el musculo existe pero esta maquina no lo trabaja. */
-  fill: color-mix(in srgb, var(--texto-tenue) 30%, transparent);
+  fill: var(--cuerpo);
+  /* El borde del color del fondo abre la costura entre musculos vecinos.
+     Es lo unico que separa un dibujo anatomico de un monton de manchas. */
+  stroke: var(--panel);
+  stroke-width: 2.4;
+  stroke-linejoin: round;
   transition: fill 220ms var(--curva);
 }
 
-/* Lo que la maquina trabaja, sin foco todavia. */
-.mapa .m[data-e="trabaja"] {
-  fill: color-mix(in srgb, var(--musculo) 42%, transparent);
-}
+/* Los que la maquina trabaja, sin foco todavia. */
+.mapa .m[data-e="trabaja"] { fill: color-mix(in srgb, var(--musculo) 62%, var(--cuerpo)); }
 
-/* Lo que la persona eligio. */
+/* El que la persona eligio. */
 .mapa .m[data-e="foco"] { fill: var(--musculo); }
+
+/* Cortes internos de un mismo musculo: el abdomen y la columna. */
+.mapa .costura {
+  fill: none;
+  stroke: var(--panel);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
 
 .mapa-pie {
   fill: var(--texto-tenue);
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   font-family: inherit;
 }
 
