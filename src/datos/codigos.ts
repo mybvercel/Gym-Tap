@@ -30,7 +30,7 @@ export interface Codigo {
 
 export const CODIGOS: Codigo[] = [
   // Las dos sueltas, para armar a mano en Canva. Se asignan cuando se peguen.
-  { codigo: "vktgd5", maquina: null, tirada: "2026-09 prueba", color: "naranja" },
+  { codigo: "vktgd5", maquina: "p1", tirada: "2026-09 prueba", color: "naranja" },
   { codigo: "jbzpnw", maquina: null, tirada: "2026-09 prueba", color: "amarillo" },
 
   // Una por máquina del piloto. Las tarjetas ya se imprimen con estas.
