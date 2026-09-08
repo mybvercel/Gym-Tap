@@ -437,9 +437,9 @@ p { margin: 0; }
 }
 
 /* Con lugar, el dibujo va al lado y se lee todo de un vistazo. */
-@media (min-width: 30rem) {
+@media (min-width: 34rem) {
   .variante {
-    grid-template-columns: 9.5rem 1fr;
+    grid-template-columns: 14rem 1fr;
     align-items: start;
   }
 }
@@ -474,7 +474,21 @@ p { margin: 0; }
 /* El cuerpo esta para dar escala, no para mirarlo. */
 .dibujo .cuerpo { fill: none; stroke: var(--texto-tenue); stroke-width: 1.5; }
 .dibujo .cuerpo-linea { stroke: var(--texto-tenue); stroke-width: 2.5; stroke-linecap: round; }
-.dibujo .etiqueta { fill: var(--texto-tenue); font-size: 11px; font-family: inherit; }
+/* La medida de referencia: la horquilla que dice "esto es el ancho de tus
+   hombros". Es lo que convierte una instruccion relativa en algo comparable. */
+.dibujo .referencia {
+  stroke: var(--texto-tenue);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.dibujo .etiqueta {
+  fill: var(--texto-tenue);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  font-family: inherit;
+}
 
 .variante-texto { display: grid; gap: 0.4rem; }
 
