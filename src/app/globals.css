@@ -835,41 +835,29 @@ p { margin: 0; }
 .mapa {
   display: block;
   width: 100%;
-  max-width: 22rem;
+  max-width: 23rem;
   margin-inline: auto;
   height: auto;
 }
 
-/* La silueta base: gris de maniqui, sin protagonismo. */
-.mapa-cuerpo { fill: var(--cuerpo); }
-
 .mapa .m {
   fill: var(--cuerpo);
-  /* El borde del color del fondo abre la costura entre musculos vecinos.
-     Es lo unico que separa un dibujo anatomico de un monton de manchas. */
-  stroke: var(--panel);
-  stroke-width: 2.4;
+  /* La costura entre musculos vecinos. Sin esto el cuerpo es una mancha. */
+  stroke: var(--fondo);
+  stroke-width: 0.6;
   stroke-linejoin: round;
   transition: fill 220ms var(--curva);
 }
 
-/* Los que la maquina trabaja, sin foco todavia. */
+/* Lo que la maquina trabaja, sin foco todavia. */
 .mapa .m[data-e="trabaja"] { fill: color-mix(in srgb, var(--musculo) 62%, var(--cuerpo)); }
 
 /* El que la persona eligio. */
 .mapa .m[data-e="foco"] { fill: var(--musculo); }
 
-/* Cortes internos de un mismo musculo: el abdomen y la columna. */
-.mapa .costura {
-  fill: none;
-  stroke: var(--panel);
-  stroke-width: 2.4;
-  stroke-linecap: round;
-}
-
 .mapa-pie {
   fill: var(--texto-tenue);
-  font-size: 13px;
+  font-size: 6px;
   font-weight: 700;
   letter-spacing: 0.16em;
   font-family: inherit;

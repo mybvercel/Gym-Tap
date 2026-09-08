@@ -31,7 +31,19 @@ export function Entrenar({ modelo, children }: { modelo: Modelo; children: React
             type="button"
             className="chip-musculo"
             aria-pressed={foco === m}
-            onClick={() => setFoco(foco === m ? null : m)}
+            onClick={(ev) => {
+              setFoco(foco === m ? null : m);
+              // Si el chip quedó fuera de la fila, nadie ve que se marcó. Se
+              // calcula el desplazamiento a mano: `scrollIntoView` no mueve
+              // esta fila porque el contenedor está centrado.
+              const fila = ev.currentTarget.parentElement;
+              const chip = ev.currentTarget;
+              const centro = chip.offsetLeft - fila!.clientWidth / 2 + chip.clientWidth / 2;
+              // Sin animación: al cambiar la selección la pantalla se
+              // reacomoda debajo, y ese salto cancela un desplazamiento suave
+              // a mitad de camino.
+              requestAnimationFrame(() => fila?.scrollTo({ left: centro }));
+            }}
           >
             {MUSCULOS[m]}
           </button>
